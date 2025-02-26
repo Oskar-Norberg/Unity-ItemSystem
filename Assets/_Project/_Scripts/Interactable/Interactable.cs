@@ -9,4 +9,9 @@ public abstract class Interactable : MonoBehaviour
     public static event OnInteractionFinishedEventHandler OnInteractionFinished;
     
     public abstract void Interact(Transform interactor);
+    
+    protected void InteractionFinished()
+    {
+        OnInteractionFinished?.Invoke();
+    }
 }

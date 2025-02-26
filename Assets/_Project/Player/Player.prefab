@@ -67,7 +67,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactOrigin: {fileID: 84832296328753638}
-  interactionAngle: 45
+  interactionAngle: 30
   interactionRange: 4
 --- !u!114 &2341650441563983436
 MonoBehaviour:

@@ -9,6 +9,7 @@ namespace Project.Item
         public override void Interact(Transform interactor)
         {
             print("Item interacted with: " + itemData.itemName);
+            InteractionFinished();
         }
     }
 }

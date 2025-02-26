@@ -9,8 +9,13 @@ namespace Project.InteractableSystem
         
         public override void Interact(Transform interactor)
         {
-            print("Item interacted with: " + itemData.itemName);
             InteractionFinished();
+
+            if (!interactor.TryGetComponent(out InventorySystem.Inventory inventory))
+                return;
+            
+            inventory.AddItem(itemData);
+            Destroy(gameObject);
         }
     }
 }

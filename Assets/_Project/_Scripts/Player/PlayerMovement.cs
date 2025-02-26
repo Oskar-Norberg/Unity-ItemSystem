@@ -14,7 +14,6 @@ namespace Project.PlayerCharacter
         
         private Rigidbody _rigidbody;
         private Vector2 wishDirection;
-        private Vector2 wishLook;
 
         private void Awake()
         {
@@ -33,12 +32,11 @@ namespace Project.PlayerCharacter
         private void OnLook(InputValue lookValue) {
             Vector2 lookVector = Time.deltaTime * cameraSensitivity * lookValue.Get<Vector2>();
 
-            wishLook += lookVector;
+            Look(lookVector);
         }
         
         private void FixedUpdate() {
             Move();
-            Look();
         }
 
         private void Move()
@@ -55,11 +53,10 @@ namespace Project.PlayerCharacter
             _rigidbody.AddForce(force, ForceMode.Acceleration);
         }
 
-        private void Look()
+        private void Look(Vector2 direction)
         {
-            cameraPivot.Rotate(Vector3.right, -wishLook.y);
-            transform.Rotate(Vector3.up, wishLook.x);
-            wishLook = Vector2.zero;
+            cameraPivot.Rotate(Vector3.right, -direction.y);
+            transform.Rotate(Vector3.up, direction.x);
         }
     }
 }

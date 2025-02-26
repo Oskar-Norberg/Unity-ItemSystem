@@ -36,6 +36,8 @@ namespace Project.PlayerCharacter
             List<Interactable> interactablesInRange = FindInteractablesInRange(interactables);
             List<Interactable> interactablesInAngle = InteractablesInAngle(interactablesInRange);
             
+            // TODO: This should find all interactibles of the hightest prio group.
+            // Then filter based on angle from viewport center
             Interactable highestPriorityInteractable = GetHighestPriorityInteractable(interactablesInAngle);
                 
             if (highestPriorityInteractable != null)

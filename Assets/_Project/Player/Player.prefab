@@ -66,6 +66,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 967c990524170ad4f8c83143bd1d06c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interactOrigin: {fileID: 84832296328753638}
+  interactionAngle: 45
+  interactionRange: 4
 --- !u!114 &2341650441563983436
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -117,7 +120,7 @@ Rigidbody:
   m_GameObject: {fileID: 78636782727110363}
   serializedVersion: 4
   m_Mass: 1
-  m_Drag: 0
+  m_Drag: 5
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}

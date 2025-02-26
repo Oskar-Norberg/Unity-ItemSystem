@@ -14,7 +14,9 @@ namespace Project.InteractableSystem
             if (!interactor.TryGetComponent(out InventorySystem.Inventory inventory))
                 return;
             
-            inventory.AddItem(itemData);
+            if (!inventory.AddItem(itemData))
+                return;
+            
             Destroy(gameObject);
         }
     }

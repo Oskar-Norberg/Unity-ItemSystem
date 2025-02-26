@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Project.Player
+namespace Project.PlayerCharacter
 {
     [RequireComponent(typeof(PlayerMovement))]
     [RequireComponent(typeof(PlayerInteraction))]

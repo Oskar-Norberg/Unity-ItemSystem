@@ -1,6 +1,7 @@
+using Project.ItemSystem;
 using UnityEngine;
 
-namespace Project.Item
+namespace Project.InteractableSystem
 {
     public class Item : Interactable
     {

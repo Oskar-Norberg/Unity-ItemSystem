@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using Project.InteractableSystem;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Project.Player
+namespace Project.PlayerCharacter
 {
     [RequireComponent(typeof(PlayerInput))]
     public class PlayerInteraction : MonoBehaviour

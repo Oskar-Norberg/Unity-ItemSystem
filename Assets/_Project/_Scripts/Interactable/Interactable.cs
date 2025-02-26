@@ -1,17 +1,21 @@
 using UnityEngine;
 
-public abstract class Interactable : MonoBehaviour
+namespace Project.InteractableSystem
 {
-    public int Priority => priority;
-    [SerializeField] private int priority;
-    
-    public delegate void OnInteractionFinishedEventHandler();
-    public static event OnInteractionFinishedEventHandler OnInteractionFinished;
-    
-    public abstract void Interact(Transform interactor);
-    
-    protected void InteractionFinished()
+    public abstract class Interactable : MonoBehaviour
     {
-        OnInteractionFinished?.Invoke();
+        public int Priority => priority;
+        [SerializeField] private int priority;
+
+        public delegate void OnInteractionFinishedEventHandler();
+
+        public static event OnInteractionFinishedEventHandler OnInteractionFinished;
+
+        public abstract void Interact(Transform interactor);
+
+        protected void InteractionFinished()
+        {
+            OnInteractionFinished?.Invoke();
+        }
     }
 }

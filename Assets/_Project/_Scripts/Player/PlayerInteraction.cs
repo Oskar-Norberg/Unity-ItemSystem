@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,26 +7,71 @@ namespace Project.Player
     [RequireComponent(typeof(PlayerInput))]
     public class PlayerInteraction : MonoBehaviour
     {
+        private bool _isInteracting;
+        private bool _canInteract = true;
+        
         [SerializeField] private Transform interactOrigin;
         
         // Angle from center of viewport to the left and right
         [SerializeField] private float interactionAngle = 25.0f;
         [SerializeField] private float interactionRange = 10.0f;
 
+        private void Awake()
+        {
+            _isInteracting = false;
+            _canInteract = true;
+        }
+
         private void OnSubmit(InputValue submitValue)
         {
+            if (!_canInteract)
+                return;
+            
             if (!submitValue.isPressed) 
                 return;
             
             List<Interactable> interactables = FindAllInteractables();
-
+            
             List<Interactable> interactablesInRange = FindInteractablesInRange(interactables);
             List<Interactable> interactablesInAngle = InteractablesInAngle(interactablesInRange);
+            
             Interactable highestPriorityInteractable = GetHighestPriorityInteractable(interactablesInAngle);
                 
-            highestPriorityInteractable?.Interact(transform);
+            if (highestPriorityInteractable != null)
+                Interact(highestPriorityInteractable);
+        }
+        
+        private void Interact(Interactable interactable)
+        {
+            _canInteract = false;
+            interactable.Interact(transform);
         }
 
+        #region Event Subscription
+
+        private void OnEnable()
+        {
+            Interactable.OnInteractionFinished += OnInteractionFinished;
+        }
+        
+        private void OnDisable()
+        {
+            Interactable.OnInteractionFinished -= OnInteractionFinished;
+        }
+
+        #endregion
+
+        #region Event Handlers
+
+        private void OnInteractionFinished()
+        {
+            _canInteract = true;
+        }
+
+        #endregion
+
+        #region Finding Interactables
+        // TODO: This is pretty expensive, but it's fine for now
         private List<Interactable> FindAllInteractables()
         {
             Interactable[] interactables =
@@ -81,7 +125,10 @@ namespace Project.Player
 
             return highestPriorityInteractable;
         }
+        
+        #endregion
 
+        #region Debug Draw
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.green;
@@ -93,5 +140,6 @@ namespace Project.Player
             Gizmos.DrawFrustum(Vector3.zero, interactionAngle * 2, interactionRange, 0.1f, 1.0f);
             Gizmos.matrix = temp;
         }
+        #endregion
     }
 }

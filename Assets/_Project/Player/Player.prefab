@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2820677599000165413}
   - component: {fileID: 2341650441563983436}
   - component: {fileID: 6981673218871555767}
+  - component: {fileID: 881547613121995089}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -51,6 +52,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraPivot: {fileID: 84832296328753638}
+  cameraSensitivity: 12
+  movementSpeed: 60
 --- !u!114 &2820677599000165413
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105,6 +108,33 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!54 &881547613121995089
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 78636782727110363}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 80
+  m_CollisionDetection: 0
 --- !u!1 &1665815576651934804
 GameObject:
   m_ObjectHideFlags: 0

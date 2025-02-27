@@ -12,13 +12,13 @@ namespace Project.InventorySystem.UI
         private Inventory _inventoryToDisplay;
         private bool _isInventoryOpen;
         
-        private void Start()
+        private void OnEnable()
         {
             _isInventoryOpen = gameObject.activeInHierarchy;
             PlayerInventory.OnInventoryEvent += ToggleInventory;
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             PlayerInventory.OnInventoryEvent -= ToggleInventory;
         }
@@ -32,8 +32,10 @@ namespace Project.InventorySystem.UI
                 _inventoryToDisplay = inventory;
                 SetText(inventory);
             }
-
-            gameObject.SetActive(_isInventoryOpen);
+            else
+            {
+                
+            }
         }
 
         // TODO: VERY TEMPORARY DEBUG DISPLAY

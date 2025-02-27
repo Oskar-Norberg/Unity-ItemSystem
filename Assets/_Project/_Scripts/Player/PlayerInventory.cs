@@ -14,7 +14,7 @@ namespace Project.PlayerCharacter
         {
             if (!submitValue.isPressed)
                 return;
-            
+
             OnInventoryEvent?.Invoke(this);
         }
     }

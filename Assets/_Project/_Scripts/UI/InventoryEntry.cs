@@ -23,7 +23,7 @@ namespace Project.InventorySystem.UI
             if (inventoryItem == null || inventoryItem.ItemData == null)
                 return;
             
-            countText.text = inventoryItem.Amount.ToString();
+            countText.text = "x" + inventoryItem.Amount;
             image.sprite = inventoryItem.ItemData.itemSprite;
         }
     }

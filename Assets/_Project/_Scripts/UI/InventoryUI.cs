@@ -1,6 +1,5 @@
-using System;
-using System.Net.Mime;
 using System.Text;
+using Project.PlayerCharacter;
 using TMPro;
 using UnityEngine;
 
@@ -13,20 +12,25 @@ namespace Project.InventorySystem.UI
         private Inventory _inventoryToDisplay;
         private bool _isInventoryOpen;
         
-        public void Awake()
+        private void Start()
         {
             _isInventoryOpen = gameObject.activeInHierarchy;
+            PlayerInventory.OnInventoryEvent += ToggleInventory;
         }
-        
+
+        private void OnDestroy()
+        {
+            PlayerInventory.OnInventoryEvent -= ToggleInventory;
+        }
+
         public void ToggleInventory(Inventory inventory)
         {
             _isInventoryOpen = !_isInventoryOpen;
-
-
+            
             if (_isInventoryOpen)
             {
                 _inventoryToDisplay = inventory;
-                
+                SetText(inventory);
             }
 
             gameObject.SetActive(_isInventoryOpen);

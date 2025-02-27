@@ -2,6 +2,7 @@ using System.Text;
 using Project.PlayerCharacter;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Project.InventorySystem.UI
 {
@@ -11,6 +12,15 @@ namespace Project.InventorySystem.UI
         
         private Inventory _inventoryToDisplay;
         private bool _isInventoryOpen;
+
+        [SerializeField] private UnityAction onInventoryStarted;
+        [SerializeField] private UnityAction onInventoryOpened;
+        [SerializeField] private UnityAction onInventoryClosed;
+
+        private void Start()
+        {
+            onInventoryStarted?.Invoke();
+        }
         
         private void OnEnable()
         {
@@ -31,10 +41,11 @@ namespace Project.InventorySystem.UI
             {
                 _inventoryToDisplay = inventory;
                 SetText(inventory);
+                onInventoryOpened?.Invoke();
             }
             else
             {
-                
+                onInventoryClosed?.Invoke();
             }
         }
 

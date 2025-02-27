@@ -70,11 +70,21 @@ namespace Project.InventorySystem.UI
             onInventoryOpened?.Invoke();
             
             Initialize(inventory);
+
+            foreach (var entry in _inventoryEntries)
+            {
+                entry.gameObject.SetActive(true);
+            }
         }
 
         private void DisableInventory(Inventory inventory)
         {
             onInventoryClosed?.Invoke();
+            
+            foreach (var entry in _inventoryEntries)
+            {
+                entry.gameObject.SetActive(false);
+            }
         }
     }
 }

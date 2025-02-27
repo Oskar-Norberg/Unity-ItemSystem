@@ -13,9 +13,9 @@ namespace Project.InventorySystem.UI
         private Inventory _inventoryToDisplay;
         private bool _isInventoryOpen;
 
-        [SerializeField] private UnityAction onInventoryStarted;
-        [SerializeField] private UnityAction onInventoryOpened;
-        [SerializeField] private UnityAction onInventoryClosed;
+        [SerializeField] private UnityEvent onInventoryStarted;
+        [SerializeField] private UnityEvent onInventoryOpened;
+        [SerializeField] private UnityEvent onInventoryClosed;
 
         private void Start()
         {

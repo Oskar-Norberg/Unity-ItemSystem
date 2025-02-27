@@ -55,7 +55,7 @@ namespace Project.InventorySystem.UI
 
             foreach (var item in inventory.GetItems())
             {
-                sb.Append(item.itemName + "\n");
+                sb.AppendFormat("{0} x{1}\n", item.itemData.name, item.amount);
             }
             
             text.text = sb.ToString();

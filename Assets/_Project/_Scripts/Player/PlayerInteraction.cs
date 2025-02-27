@@ -75,6 +75,7 @@ namespace Project.PlayerCharacter
 
         #region Finding Interactables
         // TODO: This is pretty expensive, but it's fine for now
+        // TODO: Why the fuck am i not doing a sphere cast???
         private List<Interactable> FindAllInteractables()
         {
             Interactable[] interactables =

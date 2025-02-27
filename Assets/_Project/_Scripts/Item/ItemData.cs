@@ -10,5 +10,8 @@ namespace Project.ItemSystem
         public Sprite itemSprite;
     
         public GameObject itemPrefab;
+        
+        public bool isStackable;
+        public int maxStack;
     }
 }

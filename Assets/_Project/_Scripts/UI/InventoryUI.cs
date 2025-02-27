@@ -24,7 +24,6 @@ namespace Project.InventorySystem.UI
         
         private void OnEnable()
         {
-            _isInventoryOpen = gameObject.activeInHierarchy;
             PlayerInventory.OnInventoryEvent += ToggleInventory;
         }
 

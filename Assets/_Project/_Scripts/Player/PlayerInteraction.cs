@@ -31,9 +31,7 @@ namespace Project.PlayerCharacter
             if (!submitValue.isPressed) 
                 return;
             
-            List<Interactable> interactables = FindAllInteractables();
-            
-            List<Interactable> interactablesInRange = FindInteractablesInRange(interactables);
+            List<Interactable> interactablesInRange = FindInteractablesInRange();
             List<Interactable> interactablesInAngle = InteractablesInAngle(interactablesInRange);
             
             // TODO: This should find all interactibles of the hightest prio group.
@@ -74,27 +72,19 @@ namespace Project.PlayerCharacter
         #endregion
 
         #region Finding Interactables
-        // TODO: This is pretty expensive, but it's fine for now
-        // TODO: Why the fuck am i not doing a sphere cast???
-        private List<Interactable> FindAllInteractables()
-        {
-            Interactable[] interactables =
-                FindObjectsByType<Interactable>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
-            
-            return new List<Interactable>(interactables);
-        }
 
-        private List<Interactable> FindInteractablesInRange(List<Interactable> interactables)
+        private List<Interactable> FindInteractablesInRange()
         {
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, interactionRange);
+
             List<Interactable> interactablesInRange = new List<Interactable>();
-            
-            foreach (var interactable in interactables)
+
+            foreach (var hit in hitColliders)
             {
-                float distanceToPlayer = Vector3.Distance(interactable.transform.position, transform.position);
-                if (distanceToPlayer <= interactionRange)
+                if (hit.gameObject.TryGetComponent<Interactable>(out var interactable))
                     interactablesInRange.Add(interactable);
             }
-            
+
             return interactablesInRange;
         }
         

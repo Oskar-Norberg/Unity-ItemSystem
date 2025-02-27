@@ -39,8 +39,10 @@ namespace Project.InventorySystem.UI
 
             foreach (var item in inventory.GetItems())
             {
-                sb.Append(item.itemName + "\n")
+                sb.Append(item.itemName + "\n");
             }
+            
+            text.text = sb.ToString();
         }
     }
 }

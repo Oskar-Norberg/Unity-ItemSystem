@@ -19,7 +19,7 @@ namespace Project.InventorySystem.UI
         private bool _isInitialized;
         private List<InventoryEntry> _inventoryEntries = new();
 
-        #region Events
+        #region Events Subscription
         private void Start()
         {
             onInventoryStarted?.Invoke();
@@ -71,19 +71,21 @@ namespace Project.InventorySystem.UI
             
             Initialize(inventory);
 
-            foreach (var entry in _inventoryEntries)
-            {
-                entry.gameObject.SetActive(true);
-            }
+            SetEntriesActive(true);
         }
 
         private void DisableInventory(Inventory inventory)
         {
             onInventoryClosed?.Invoke();
-            
+
+            SetEntriesActive(false);
+        }
+
+        private void SetEntriesActive(bool active)
+        {
             foreach (var entry in _inventoryEntries)
             {
-                entry.gameObject.SetActive(false);
+                entry.gameObject.SetActive(active);
             }
         }
     }

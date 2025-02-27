@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Project.ItemSystem
 {
-    [CreateAssetMenu(fileName = "ItemData", menuName = "Scriptable Objects/Item")]
+    [CreateAssetMenu(fileName = "ItemData", menuName = "Scriptable Objects/Items/Item Data")]
     public class ItemData : ScriptableObject
     {
         // TODO: Remove item prefix, it's redundant
@@ -10,8 +10,5 @@ namespace Project.ItemSystem
         public Sprite itemSprite;
     
         public GameObject itemPrefab;
-        
-        public bool isStackable;
-        public int maxStack;
     }
 }

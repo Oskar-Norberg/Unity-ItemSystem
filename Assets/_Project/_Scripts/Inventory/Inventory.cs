@@ -19,7 +19,8 @@ namespace Project.InventorySystem
             
             if (TryGetItem(itemData, out inventoryItem))
             {
-                if (itemData.isStackable)
+                // TODO: Implement max stack size
+                if (itemData is StackableItemData)
                     inventoryItem.amount++;
                 else
                     _items.Add(inventoryItem);

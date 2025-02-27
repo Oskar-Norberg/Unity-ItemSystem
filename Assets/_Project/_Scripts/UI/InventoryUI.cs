@@ -1,6 +1,5 @@
-using System.Text;
+using System.Collections.Generic;
 using Project.PlayerCharacter;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -8,7 +7,7 @@ namespace Project.InventorySystem.UI
 {
     public class InventoryUI : MonoBehaviour
     {
-        [SerializeField] private TextMeshProUGUI text;
+        [SerializeField] private GameObject inventoryEntryPrefab;
         
         private Inventory _inventoryToDisplay;
         private bool _isInventoryOpen;
@@ -17,6 +16,10 @@ namespace Project.InventorySystem.UI
         [SerializeField] private UnityEvent onInventoryOpened;
         [SerializeField] private UnityEvent onInventoryClosed;
 
+        private bool _isInitialized;
+        private List<InventoryEntry> _inventoryEntries = new();
+
+        #region Events
         private void Start()
         {
             onInventoryStarted?.Invoke();
@@ -31,34 +34,47 @@ namespace Project.InventorySystem.UI
         {
             PlayerInventory.OnInventoryEvent -= ToggleInventory;
         }
-
-        public void ToggleInventory(Inventory inventory)
+        #endregion
+        
+        private void ToggleInventory(Inventory inventory)
         {
             _isInventoryOpen = !_isInventoryOpen;
             
             if (_isInventoryOpen)
-            {
-                _inventoryToDisplay = inventory;
-                SetText(inventory);
-                onInventoryOpened?.Invoke();
-            }
+                EnableInventory(inventory);
             else
+                DisableInventory(inventory);
+        }
+
+        private void Initialize(Inventory inventory)
+        {
+            if (_isInitialized)
+                return;
+
+            _inventoryToDisplay = inventory;
+            _isInitialized = true;
+
+            for (int i = 0; i < inventory.MaxInventorySize; i++)
             {
-                onInventoryClosed?.Invoke();
+                GameObject inventoryEntry = Instantiate(inventoryEntryPrefab, transform);
+                InventoryEntry inventoryEntryComponent = inventoryEntry.GetComponent<InventoryEntry>();
+
+                _inventoryEntries.Add(inventoryEntryComponent);
+                inventoryEntryComponent.SetItem(inventory.GetItem(i));
             }
         }
 
-        // TODO: VERY TEMPORARY DEBUG DISPLAY
-        private void SetText(Inventory inventory)
+        private void EnableInventory(Inventory inventory)
         {
-            StringBuilder sb = new StringBuilder();
-
-            foreach (var item in inventory.GetItems())
-            {
-                sb.AppendFormat("{0} x{1}\n", item.itemData.name, item.amount);
-            }
+            _inventoryToDisplay = inventory;
+            onInventoryOpened?.Invoke();
             
-            text.text = sb.ToString();
+            Initialize(inventory);
+        }
+
+        private void DisableInventory(Inventory inventory)
+        {
+            onInventoryClosed?.Invoke();
         }
     }
 }

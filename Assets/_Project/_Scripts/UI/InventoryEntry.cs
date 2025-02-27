@@ -1,3 +1,4 @@
+using Project.ItemSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,7 +24,9 @@ namespace Project.InventorySystem.UI
             if (inventoryItem == null || inventoryItem.ItemData == null)
                 return;
             
-            countText.text = "x" + inventoryItem.Amount;
+            if (inventoryItem.ItemData is StackableItemData)
+                countText.text = "x" + inventoryItem.Amount;
+            
             image.sprite = inventoryItem.ItemData.itemSprite;
         }
     }

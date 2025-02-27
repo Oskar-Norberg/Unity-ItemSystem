@@ -19,6 +19,11 @@ namespace Project.InventorySystem
             // TODO: Implement if item was added successfully
             return true;
         }
+
+        public List<ItemData> GetItems()
+        {
+            return _items;
+        }
     }
 }
 

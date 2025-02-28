@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Project.InteractableSystem;
 using UnityEngine;
@@ -7,15 +8,17 @@ namespace Project.PlayerCharacter
 {
     [RequireComponent(typeof(PlayerInput))]
     public class PlayerInteraction : MonoBehaviour
-    {
-        private bool _isInteracting;
-        private bool _canInteract = true;
-        
+    { 
         [SerializeField] private Transform interactOrigin;
         
         // Angle from center of viewport to the left and right
         [SerializeField] private float interactionAngle = 25.0f;
         [SerializeField] private float interactionRange = 10.0f;
+
+        private Dictionary<GameObject, Interactable> _cachedInteractables = new Dictionary<GameObject, Interactable>();
+        
+        private bool _isInteracting;
+        private bool _canInteract = true;
 
         private void Awake()
         {
@@ -31,19 +34,19 @@ namespace Project.PlayerCharacter
             if (!submitValue.isPressed) 
                 return;
             
-            List<Interactable> interactables = FindAllInteractables();
+            VerifyCachedInteractables();
+
+            List<Interactable> interactablesInRange = FindInteractablesInRange();
             
-            List<Interactable> interactablesInRange = FindInteractablesInRange(interactables);
-            List<Interactable> interactablesInAngle = InteractablesInAngle(interactablesInRange);
+            if (interactablesInRange.Count == 0)
+                return;
             
-            // TODO: This should find all interactibles of the hightest prio group.
-            // Then filter based on angle from viewport center
-            Interactable highestPriorityInteractable = GetHighestPriorityInteractable(interactablesInAngle);
+            List<Interactable> nonObscuredInteractables = NonObscuredInteractables(interactablesInRange);
+            Interactable closestInteractable = GetClosestInteractableByAngle(nonObscuredInteractables);
                 
-            if (highestPriorityInteractable != null)
-                Interact(highestPriorityInteractable);
+            Interact(closestInteractable);
         }
-        
+
         private void Interact(Interactable interactable)
         {
             _canInteract = false;
@@ -74,60 +77,89 @@ namespace Project.PlayerCharacter
         #endregion
 
         #region Finding Interactables
-        // TODO: This is pretty expensive, but it's fine for now
-        // TODO: Why the fuck am i not doing a sphere cast???
-        private List<Interactable> FindAllInteractables()
+
+        private void VerifyCachedInteractables()
         {
-            Interactable[] interactables =
-                FindObjectsByType<Interactable>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+            List<GameObject> keysToRemove = new List<GameObject>();
             
-            return new List<Interactable>(interactables);
+            foreach (var cachedInteractable in _cachedInteractables)
+            {
+                if (cachedInteractable.Key == null)
+                    keysToRemove.Add(cachedInteractable.Key);
+            }
+
+            foreach (var key in keysToRemove)
+            {
+                _cachedInteractables.Remove(key);
+            }
         }
 
-        private List<Interactable> FindInteractablesInRange(List<Interactable> interactables)
+        private List<Interactable> FindInteractablesInRange()
         {
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, interactionRange);
             List<Interactable> interactablesInRange = new List<Interactable>();
+            
+            foreach (var hitCollider in hitColliders)
+            {
+                var colliderGameObject = hitCollider.gameObject;
+                
+                if (_cachedInteractables.TryGetValue(colliderGameObject, out var cachedInteractable))
+                {
+                    if (cachedInteractable == null)
+                        continue;
+                    
+                    interactablesInRange.Add(cachedInteractable);
+                    continue;
+                }
+                
+                if (colliderGameObject.gameObject.TryGetComponent<Interactable>(out var interactableComponent))
+                    interactablesInRange.Add(interactableComponent);
+                
+                _cachedInteractables.Add(colliderGameObject, interactableComponent);
+            }
+
+            return interactablesInRange;
+        }
+
+        private List<Interactable> NonObscuredInteractables(List<Interactable> interactables)
+        {
+            Stack<Interactable> interactablesToRemove = new Stack<Interactable>();
             
             foreach (var interactable in interactables)
             {
-                float distanceToPlayer = Vector3.Distance(interactable.transform.position, transform.position);
-                if (distanceToPlayer <= interactionRange)
-                    interactablesInRange.Add(interactable);
+                Vector3 directionToInteractable = interactable.transform.position - interactOrigin.position;
+                float distanceToInteractable = directionToInteractable.magnitude;
+                
+                if (Physics.Raycast(interactOrigin.position, directionToInteractable, out var hit, distanceToInteractable))
+                {
+                    if (hit.collider.gameObject != interactable.gameObject)
+                        interactablesToRemove.Push(interactable);
+                }
             }
-            
-            return interactablesInRange;
+
+            while (interactablesToRemove.Count > 0)
+            {
+                interactables.Remove(interactablesToRemove.Pop());
+            }
+
+            return interactables;
         }
-        
-        private List<Interactable> InteractablesInAngle(List<Interactable> interactables)
+
+        private Interactable GetClosestInteractableByAngle(List<Interactable> interactables)
         {
-            List<Interactable> interactablesInAngle = new List<Interactable>();
+            List<Tuple<Interactable, float>> interactablesByAngle = new ();
             
             foreach (var interactable in interactables)
             {
                 Vector3 directionToInteractable = interactable.transform.position - interactOrigin.position;
                 float angleToInteractable = Vector3.Angle(interactOrigin.forward, directionToInteractable);
                 
-                if (angleToInteractable <= interactionAngle)
-                    interactablesInAngle.Add(interactable);
+                interactablesByAngle.Add(new Tuple<Interactable, float>(interactable, angleToInteractable));
             }
             
-            return interactablesInAngle;
-        }
-
-        private Interactable GetHighestPriorityInteractable(List<Interactable> interactables)
-        {
-            if (interactables.Count == 0)
-                return null;
+            interactablesByAngle.Sort((a, b) => a.Item2.CompareTo(b.Item2));
             
-            Interactable highestPriorityInteractable = interactables[0];
-            
-            foreach (var interactable in interactables)
-            {
-                if (interactable.Priority > highestPriorityInteractable.Priority)
-                    highestPriorityInteractable = interactable;
-            }
-
-            return highestPriorityInteractable;
+            return interactablesByAngle[0].Item1;
         }
         
         #endregion

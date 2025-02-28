@@ -47,21 +47,6 @@ namespace Project.PlayerCharacter
             Interact(closestInteractable);
         }
 
-        private void Update()
-        {
-            VerifyCachedInteractables();
-
-            List<Interactable> interactablesInRange = FindInteractablesInRange();
-            
-            if (interactablesInRange.Count == 0)
-                return;
-            
-            List<Interactable> nonObscuredInteractables = NonObscuredInteractables(interactablesInRange);
-            Interactable closestInteractableByAngle = GetClosestInteractableByAngle(nonObscuredInteractables);
-            
-            print(closestInteractableByAngle.name);
-        }
-
         private void Interact(Interactable interactable)
         {
             _canInteract = false;

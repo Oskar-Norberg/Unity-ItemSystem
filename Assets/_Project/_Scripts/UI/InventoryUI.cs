@@ -22,17 +22,21 @@ namespace Project.InventorySystem.UI
         #region Events Subscription
         private void Start()
         {
+            Initialize(PlayerInventory.Instance);
+
+            SetEntriesActive(false);
             onInventoryStarted?.Invoke();
         }
         
         private void OnEnable()
         {
-            PlayerInventory.OnInventoryEvent += ToggleInventory;
+            PlayerInventory.Instance.OnInventoryEvent += ToggleInventory;
         }
 
         private void OnDisable()
         {
-            PlayerInventory.OnInventoryEvent -= ToggleInventory;
+            if (PlayerInventory.Instance != null)
+                PlayerInventory.Instance.OnInventoryEvent -= ToggleInventory;
         }
         #endregion
         
@@ -48,6 +52,7 @@ namespace Project.InventorySystem.UI
 
         private void Initialize(Inventory inventory)
         {
+            // TODO: Implement proper size handling
             if (_isInitialized)
                 return;
 

@@ -7,8 +7,34 @@ namespace Project.PlayerCharacter
     [RequireComponent(typeof(PlayerInput))]
     public class PlayerInventory : Inventory
     {
+        public static PlayerInventory Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    Debug.Log("Instance of " + nameof(PlayerInventory) + " is null");
+                    return null;
+                }
+
+                return _instance;
+            }
+        }
+        
+        private static PlayerInventory _instance;
+        
         public delegate void OnInventoryEventHandler(Inventory inventory);
-        public static event OnInventoryEventHandler OnInventoryEvent;
+        public event OnInventoryEventHandler OnInventoryEvent;
+
+        private void Awake()
+        {
+            base.Awake();
+            
+            if (_instance == null)
+                _instance = this;
+            else
+                Destroy(gameObject);
+        }
         
         private void OnInventory(InputValue submitValue)
         {

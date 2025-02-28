@@ -10,7 +10,7 @@ namespace Project.InventorySystem
         [SerializeField] private int inventorySize = 25;
         private InventorySlot[] _inventorySlots;
 
-        private void Awake()
+        protected void Awake()
         {
             _inventorySlots = new InventorySlot[inventorySize];
             

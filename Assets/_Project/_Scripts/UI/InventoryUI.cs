@@ -54,13 +54,13 @@ namespace Project.InventorySystem.UI
             _inventoryToDisplay = inventory;
             _isInitialized = true;
 
-            for (int i = 0; i < inventory.MaxInventorySize; i++)
+            foreach (var inventorySlot in inventory.GetInventorySlots())
             {
                 GameObject inventoryEntry = Instantiate(inventoryEntryPrefab, transform);
                 InventoryEntry inventoryEntryComponent = inventoryEntry.GetComponent<InventoryEntry>();
 
                 _inventoryEntries.Add(inventoryEntryComponent);
-                inventoryEntryComponent.SetItem(inventory.GetInventorySlot(i));
+                inventoryEntryComponent.SetItem(inventorySlot);
             }
         }
 

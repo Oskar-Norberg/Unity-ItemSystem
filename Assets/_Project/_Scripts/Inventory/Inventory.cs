@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Project.ItemSystem;
 using UnityEngine;
 
@@ -6,16 +5,18 @@ namespace Project.InventorySystem
 {
     public class Inventory : MonoBehaviour
     {
-        public int MaxInventorySize => maxInventorySize;
+        public int InventorySize => inventorySize;
         
-        [SerializeField] private int maxInventorySize = 25;
-        private List<InventorySlot> _inventorySlots = new();
+        [SerializeField] private int inventorySize = 25;
+        private InventorySlot[] _inventorySlots;
 
         private void Awake()
         {
-            for (int i = 0; i < maxInventorySize; i++)
+            _inventorySlots = new InventorySlot[inventorySize];
+            
+            for (int i = 0; i < inventorySize; i++)
             {
-                _inventorySlots.Add(new InventorySlot(null, 0));
+                _inventorySlots[i] = new InventorySlot(null, 0);
             }
         }
         
@@ -61,7 +62,7 @@ namespace Project.InventorySystem
             return _inventorySlots[index];
         }
 
-        public List<InventorySlot> GetInventorySlots()
+        public InventorySlot[] GetInventorySlots()
         {
             return _inventorySlots;
         }

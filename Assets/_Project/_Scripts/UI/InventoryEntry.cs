@@ -26,7 +26,7 @@ namespace Project.InventorySystem.UI
             if (inventorySlot.ItemData is StackableItemData)
                 countText.text = "x" + inventorySlot.Amount;
             
-            image.sprite = inventorySlot.ItemData.itemSprite;
+            image.sprite = inventorySlot.ItemData.sprite;
         }
     }
 }

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bdb43296733bff48bc4e6567b2ad43e, type: 3}
   m_Name: TestCarStackable
   m_EditorClassIdentifier: 
-  itemName: Car
-  itemSprite: {fileID: 21300000, guid: b20c3b88469088142b1779d86660a8ac, type: 3}
-  itemPrefab: {fileID: 6055281694215008660, guid: 32d3800ebd8820b4dbfc759be572d871, type: 3}
-  maxStack: 16
+  name: Car
+  sprite: {fileID: 21300000, guid: b20c3b88469088142b1779d86660a8ac, type: 3}
+  prefab: {fileID: 6055281694215008660, guid: 32d3800ebd8820b4dbfc759be572d871, type: 3}
+  maxStackSize: 100

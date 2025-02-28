@@ -13,7 +13,7 @@ namespace Project.PlayerCharacter
             {
                 if (_instance == null)
                 {
-                    Debug.Log("Instance of " + nameof(PlayerInventory) + " is null");
+                    Debug.LogWarning("Instance of " + nameof(PlayerInventory) + " is null");
                     return null;
                 }
 

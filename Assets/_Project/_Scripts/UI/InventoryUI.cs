@@ -16,7 +16,6 @@ namespace Project.InventorySystem.UI
         [SerializeField] private UnityEvent onInventoryOpened;
         [SerializeField] private UnityEvent onInventoryClosed;
 
-        private bool _isInitialized;
         private List<InventoryEntry> _inventoryEntries = new();
 
         #region Events Subscription
@@ -52,20 +51,58 @@ namespace Project.InventorySystem.UI
 
         private void Initialize(Inventory inventory)
         {
-            // TODO: Implement proper size handling
-            if (_isInitialized)
+            if (inventory.InventorySize == _inventoryEntries.Count)
                 return;
 
+            // Create more entries if inventory size is greater than the current amount of entries
+            if (inventory.InventorySize >= _inventoryEntries.Count)
+                CreateNewEntries(inventory);
+            
+            // Hide entries that are not needed
+            if (inventory.InventorySize < _inventoryEntries.Count)
+                HideExtraEntries(inventory);
+
             _inventoryToDisplay = inventory;
-            _isInitialized = true;
 
-            foreach (var inventorySlot in inventory.GetInventorySlots())
+            LinkInventoryEntries(inventory);
+        }
+
+        private void CreateNewEntries(Inventory inventory)
+        {
+            for (int i = _inventoryEntries.Count; i < inventory.InventorySize; i++)
             {
-                GameObject inventoryEntry = Instantiate(inventoryEntryPrefab, transform);
-                InventoryEntry inventoryEntryComponent = inventoryEntry.GetComponent<InventoryEntry>();
+                _inventoryEntries.Add(CreateNewEntry());
+            }
+        }
 
-                _inventoryEntries.Add(inventoryEntryComponent);
-                inventoryEntryComponent.SetItem(inventorySlot);
+        private InventoryEntry CreateNewEntry()
+        {
+            GameObject inventoryEntry = Instantiate(inventoryEntryPrefab, transform);
+            InventoryEntry inventoryEntryComponent = inventoryEntry.GetComponent<InventoryEntry>();
+
+            return inventoryEntryComponent;
+        }
+
+        private void HideExtraEntries(Inventory inventory)
+        {
+            for (int i = inventory.InventorySize; i < _inventoryEntries.Count; i++)
+            {
+                SetEntryActive(_inventoryEntries[i], false);
+            }
+        }
+
+        private void SetEntryActive(InventoryEntry entry, bool active)
+        {
+            entry.gameObject.SetActive(active);
+        }
+
+        private void LinkInventoryEntries(Inventory inventory)
+        {
+            InventorySlot[] inventorySlots = inventory.GetInventorySlots();
+
+            for (int i = 0; i < inventorySlots.Length; i++)
+            {
+                _inventoryEntries[i].SetItem(inventorySlots[i]);
             }
         }
 
@@ -88,9 +125,12 @@ namespace Project.InventorySystem.UI
 
         private void SetEntriesActive(bool active)
         {
-            foreach (var entry in _inventoryEntries)
+            for (int i = 0; i < _inventoryToDisplay.InventorySize; i++)
             {
-                entry.gameObject.SetActive(active);
+                if (_inventoryEntries[i] == null)
+                    continue;
+                
+                SetEntryActive(_inventoryEntries[i], active);
             }
         }
     }

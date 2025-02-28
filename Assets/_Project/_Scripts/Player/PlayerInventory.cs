@@ -26,7 +26,7 @@ namespace Project.PlayerCharacter
         public delegate void OnInventoryEventHandler(Inventory inventory);
         public event OnInventoryEventHandler OnInventoryEvent;
 
-        private void Awake()
+        private new void Awake()
         {
             base.Awake();
             

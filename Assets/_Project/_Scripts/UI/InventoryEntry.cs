@@ -12,6 +12,7 @@ namespace Project.InventorySystem.UI
         
         private InventorySlot _inventorySlot;
         
+        // TODO: Rename this to SetInventorySlot, doesnt set an item. It sets the slot to represent.
         public void SetItem(InventorySlot inventorySlot)
         {
             inventorySlot.OnItemSet += UpdateItem;

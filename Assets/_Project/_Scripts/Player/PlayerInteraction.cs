@@ -44,7 +44,10 @@ namespace Project.PlayerCharacter
             
             List<Interactable> nonObscuredInteractables = GetNonObscuredInteractables(interactablesInRange);
             Interactable closestInteractable = GetClosestInteractableByAngle(nonObscuredInteractables);
-                
+
+            if (!closestInteractable)
+                return;
+            
             Interact(closestInteractable);
         }
 
@@ -144,6 +147,9 @@ namespace Project.PlayerCharacter
             }
             
             interactablesByAngle.Sort((a, b) => a.Item2.CompareTo(b.Item2));
+            
+            if (interactablesByAngle.Count == 0)
+                return null;
             
             return interactablesByAngle[0].Item1;
         }

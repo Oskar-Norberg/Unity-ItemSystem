@@ -151,6 +151,9 @@ namespace Project.PlayerCharacter
             if (interactablesByAngle.Count == 0)
                 return null;
             
+            if (interactablesByAngle[0].Item2 > interactionAngle)
+                return null;
+            
             return interactablesByAngle[0].Item1;
         }
         

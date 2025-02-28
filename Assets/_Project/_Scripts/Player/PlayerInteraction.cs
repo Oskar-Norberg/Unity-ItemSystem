@@ -8,7 +8,9 @@ namespace Project.PlayerCharacter
 {
     [RequireComponent(typeof(PlayerInput))]
     public class PlayerInteraction : MonoBehaviour
-    { 
+    {
+        public bool IsInteracting => _currentInteractable != null;
+
         [SerializeField] private Transform interactOrigin;
         
         // Angle from center of viewport to the left and right
@@ -16,13 +18,12 @@ namespace Project.PlayerCharacter
         [SerializeField] private float interactionRange = 10.0f;
 
         private Dictionary<GameObject, Interactable> _cachedInteractables = new Dictionary<GameObject, Interactable>();
-        
-        private bool _isInteracting;
+
+        private Interactable _currentInteractable;
         private bool _canInteract = true;
 
         private void Awake()
         {
-            _isInteracting = false;
             _canInteract = true;
         }
 
@@ -50,31 +51,16 @@ namespace Project.PlayerCharacter
         private void Interact(Interactable interactable)
         {
             _canInteract = false;
+            _currentInteractable = interactable;
+            _currentInteractable.OnInteractionFinished += OnInteractionFinished;
             interactable.Interact(transform);
         }
-
-        #region Event Subscription
-
-        private void OnEnable()
-        {
-            Interactable.OnInteractionFinished += OnInteractionFinished;
-        }
         
-        private void OnDisable()
-        {
-            Interactable.OnInteractionFinished -= OnInteractionFinished;
-        }
-
-        #endregion
-
-        #region Event Handlers
-
         private void OnInteractionFinished()
         {
+            _currentInteractable.OnInteractionFinished -= OnInteractionFinished;
             _canInteract = true;
         }
-
-        #endregion
 
         #region Finding Interactables
 

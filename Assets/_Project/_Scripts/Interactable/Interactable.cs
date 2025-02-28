@@ -5,7 +5,7 @@ namespace Project.InteractableSystem
     public abstract class Interactable : MonoBehaviour
     {
         public delegate void OnInteractionFinishedEventHandler();
-        public static event OnInteractionFinishedEventHandler OnInteractionFinished;
+        public event OnInteractionFinishedEventHandler OnInteractionFinished;
 
         public abstract void Interact(Transform interactor);
 

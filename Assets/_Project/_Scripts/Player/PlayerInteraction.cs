@@ -7,15 +7,17 @@ namespace Project.PlayerCharacter
 {
     [RequireComponent(typeof(PlayerInput))]
     public class PlayerInteraction : MonoBehaviour
-    {
-        private bool _isInteracting;
-        private bool _canInteract = true;
-        
+    { 
         [SerializeField] private Transform interactOrigin;
         
         // Angle from center of viewport to the left and right
         [SerializeField] private float interactionAngle = 25.0f;
         [SerializeField] private float interactionRange = 10.0f;
+
+        private Dictionary<Collider, Interactable> _cachedInteractables = new Dictionary<Collider, Interactable>();
+        
+        private bool _isInteracting;
+        private bool _canInteract = true;
 
         private void Awake()
         {
@@ -32,6 +34,10 @@ namespace Project.PlayerCharacter
                 return;
             
             List<Interactable> interactablesInRange = FindInteractablesInRange();
+            
+            if (interactablesInRange.Count == 0)
+                return;
+            
             List<Interactable> interactablesInAngle = InteractablesInAngle(interactablesInRange);
             
             // TODO: This should find all interactibles of the hightest prio group.
@@ -75,14 +81,22 @@ namespace Project.PlayerCharacter
 
         private List<Interactable> FindInteractablesInRange()
         {
+            print(_cachedInteractables.Count);
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, interactionRange);
-
             List<Interactable> interactablesInRange = new List<Interactable>();
-
-            foreach (var hit in hitColliders)
+            
+            foreach (var hitCollider in hitColliders)
             {
-                if (hit.gameObject.TryGetComponent<Interactable>(out var interactable))
-                    interactablesInRange.Add(interactable);
+                if (_cachedInteractables.TryGetValue(hitCollider, out var cachedInteractable))
+                {
+                    interactablesInRange.Add(cachedInteractable);
+                    continue;
+                }
+                
+                if (hitCollider.gameObject.TryGetComponent<Interactable>(out var interactableComponent))
+                    interactablesInRange.Add(interactableComponent);
+                
+                _cachedInteractables.Add(hitCollider, interactableComponent);
             }
 
             return interactablesInRange;

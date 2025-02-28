@@ -36,6 +36,8 @@ namespace Project.PlayerCharacter
         }
         
         private void FixedUpdate() {
+            _rigidbody.angularVelocity = Vector3.zero;
+            
             Move();
         }
 

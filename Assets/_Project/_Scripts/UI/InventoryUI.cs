@@ -57,9 +57,8 @@ namespace Project.InventorySystem.UI
             // Create more entries if inventory size is greater than the current amount of entries
             if (inventory.InventorySize >= _inventoryEntries.Count)
                 CreateNewEntries(inventory);
-            
             // Hide entries that are not needed
-            if (inventory.InventorySize < _inventoryEntries.Count)
+            else if (inventory.InventorySize < _inventoryEntries.Count)
                 HideExtraEntries(inventory);
 
             _inventoryToDisplay = inventory;
@@ -127,8 +126,8 @@ namespace Project.InventorySystem.UI
         {
             for (int i = 0; i < _inventoryToDisplay.InventorySize; i++)
             {
-                if (_inventoryEntries[i] == null)
-                    continue;
+                if (i >= _inventoryEntries.Count)
+                    return;
                 
                 SetEntryActive(_inventoryEntries[i], active);
             }

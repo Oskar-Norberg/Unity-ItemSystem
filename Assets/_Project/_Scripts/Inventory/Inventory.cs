@@ -5,16 +5,16 @@ namespace Project.InventorySystem
 {
     public class Inventory : MonoBehaviour
     {
-        public int InventorySize => inventorySize;
+        public int InventorySize => _inventorySlots.Length;
         
-        [SerializeField] private int inventorySize = 25;
+        [SerializeField] private int startingInventorySize = 25;
         private InventorySlot[] _inventorySlots;
 
         protected void Awake()
         {
-            _inventorySlots = new InventorySlot[inventorySize];
+            _inventorySlots = new InventorySlot[startingInventorySize];
             
-            for (int i = 0; i < inventorySize; i++)
+            for (int i = 0; i < startingInventorySize; i++)
             {
                 _inventorySlots[i] = new InventorySlot(null, 0);
             }

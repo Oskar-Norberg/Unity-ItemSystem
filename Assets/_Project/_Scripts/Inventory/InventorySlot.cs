@@ -10,8 +10,11 @@ namespace Project.InventorySystem
         public delegate void ItemSetEventHandler(InventorySlot inventorySlot);
         public event ItemSetEventHandler OnItemSet;
 
-        public InventorySlot(ItemData itemData, int amount)
+        private Inventory _inventory;
+
+        public InventorySlot(Inventory inventory, ItemData itemData, int amount)
         {
+            _inventory = inventory;
             ItemData = itemData;
             Amount = amount;
         }
@@ -24,11 +27,16 @@ namespace Project.InventorySystem
             OnItemSet?.Invoke(this);
         }
         
-        public void IncreaseStackSize(int amount)
+        public void IncrementStackSize(int amount)
         {
             Amount += amount;
             
             OnItemSet?.Invoke(this);
+        }
+
+        public void Drop()
+        {
+            _inventory.DropItem(this);
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Project.InventorySystem
             
             for (int i = 0; i < startingInventorySize; i++)
             {
-                _inventorySlots[i] = new InventorySlot(null, 0);
+                _inventorySlots[i] = new InventorySlot(this, null, 0);
             }
         }
         
@@ -42,7 +42,7 @@ namespace Project.InventorySystem
                 {
                     if (item.Amount < itemData.maxStackSize)
                     {
-                        item.IncreaseStackSize(1);
+                        item.IncrementStackSize(1);
                         return true;
                     }
                 }
@@ -65,6 +65,16 @@ namespace Project.InventorySystem
         public InventorySlot[] GetInventorySlots()
         {
             return _inventorySlots;
+        }
+        
+        public void DropItem(InventorySlot inventorySlot)
+        {
+            Instantiate(inventorySlot.ItemData.prefab, transform.position, Quaternion.identity);
+            
+            inventorySlot.IncrementStackSize(-1);
+            
+            if (inventorySlot.Amount == 0)
+                inventorySlot.SetItem(null, 0);
         }
 
         private bool TryAddItem(ItemData itemdata)

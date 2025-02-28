@@ -40,7 +40,9 @@ namespace Project.PlayerCharacter
             if (interactablesInRange.Count == 0)
                 return;
             
-            List<Interactable> interactablesInAngle = InteractablesInAngle(interactablesInRange);
+            List<Interactable> nonObscuredInteractables = NonObscuredInteractables(interactablesInRange);
+            
+            List<Interactable> interactablesInAngle = InteractablesInAngle(nonObscuredInteractables);
             
             // TODO: This should find all interactibles of the hightest prio group.
             // Then filter based on angle from viewport center
@@ -122,6 +124,30 @@ namespace Project.PlayerCharacter
             }
 
             return interactablesInRange;
+        }
+
+        private List<Interactable> NonObscuredInteractables(List<Interactable> interactables)
+        {
+            Stack<Interactable> interactablesToRemove = new Stack<Interactable>();
+            
+            foreach (var interactable in interactables)
+            {
+                Vector3 directionToInteractable = interactable.transform.position - interactOrigin.position;
+                float distanceToInteractable = directionToInteractable.magnitude;
+                
+                if (Physics.Raycast(interactOrigin.position, directionToInteractable, out var hit, distanceToInteractable))
+                {
+                    if (hit.collider.gameObject != interactable.gameObject)
+                        interactablesToRemove.Push(interactable);
+                }
+            }
+
+            while (interactablesToRemove.Count > 0)
+            {
+                interactables.Remove(interactablesToRemove.Pop());
+            }
+
+            return interactables;
         }
 
         private List<Interactable> InteractablesInAngle(List<Interactable> interactables)

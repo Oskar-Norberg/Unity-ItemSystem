@@ -101,7 +101,7 @@ namespace Project.InventorySystem.UI
 
             for (int i = 0; i < inventorySlots.Length; i++)
             {
-                _inventoryEntries[i].SetItem(inventorySlots[i]);
+                _inventoryEntries[i].SetInventorySlot(inventorySlots[i]);
             }
         }
 

@@ -14,7 +14,7 @@ namespace Project.PlayerCharacter
         [SerializeField] private float interactionAngle = 25.0f;
         [SerializeField] private float interactionRange = 10.0f;
 
-        private Dictionary<Collider, Interactable> _cachedInteractables = new Dictionary<Collider, Interactable>();
+        private Dictionary<GameObject, Interactable> _cachedInteractables = new Dictionary<GameObject, Interactable>();
         
         private bool _isInteracting;
         private bool _canInteract = true;
@@ -33,6 +33,8 @@ namespace Project.PlayerCharacter
             if (!submitValue.isPressed) 
                 return;
             
+            VerifyCachedInteractables();
+
             List<Interactable> interactablesInRange = FindInteractablesInRange();
             
             if (interactablesInRange.Count == 0)
@@ -79,33 +81,54 @@ namespace Project.PlayerCharacter
 
         #region Finding Interactables
 
+        private void VerifyCachedInteractables()
+        {
+            List<GameObject> keysToRemove = new List<GameObject>();
+            
+            foreach (var cachedInteractable in _cachedInteractables)
+            {
+                if (cachedInteractable.Key == null)
+                    keysToRemove.Add(cachedInteractable.Key);
+            }
+
+            foreach (var key in keysToRemove)
+            {
+                _cachedInteractables.Remove(key);
+            }
+        }
+
         private List<Interactable> FindInteractablesInRange()
         {
-            print(_cachedInteractables.Count);
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, interactionRange);
             List<Interactable> interactablesInRange = new List<Interactable>();
             
             foreach (var hitCollider in hitColliders)
             {
-                if (_cachedInteractables.TryGetValue(hitCollider, out var cachedInteractable))
+                var colliderGameObject = hitCollider.gameObject;
+                
+                if (_cachedInteractables.TryGetValue(colliderGameObject, out var cachedInteractable))
                 {
+                    if (cachedInteractable == null)
+                        continue;
+                    
                     interactablesInRange.Add(cachedInteractable);
                     continue;
                 }
                 
-                if (hitCollider.gameObject.TryGetComponent<Interactable>(out var interactableComponent))
+                if (colliderGameObject.gameObject.TryGetComponent<Interactable>(out var interactableComponent))
                     interactablesInRange.Add(interactableComponent);
                 
-                _cachedInteractables.Add(hitCollider, interactableComponent);
+                _cachedInteractables.Add(colliderGameObject, interactableComponent);
             }
 
             return interactablesInRange;
         }
-        
+
         private List<Interactable> InteractablesInAngle(List<Interactable> interactables)
         {
             List<Interactable> interactablesInAngle = new List<Interactable>();
             
+            print(interactables.Count);
             foreach (var interactable in interactables)
             {
                 Vector3 directionToInteractable = interactable.transform.position - interactOrigin.position;

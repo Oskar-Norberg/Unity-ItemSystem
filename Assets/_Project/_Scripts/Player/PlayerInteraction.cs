@@ -37,12 +37,12 @@ namespace Project.PlayerCharacter
             
             VerifyCachedInteractables();
 
-            List<Interactable> interactablesInRange = FindInteractablesInRange();
+            List<Interactable> interactablesInRange = GetInteractablesInRange();
             
             if (interactablesInRange.Count == 0)
                 return;
             
-            List<Interactable> nonObscuredInteractables = NonObscuredInteractables(interactablesInRange);
+            List<Interactable> nonObscuredInteractables = GetNonObscuredInteractables(interactablesInRange);
             Interactable closestInteractable = GetClosestInteractableByAngle(nonObscuredInteractables);
                 
             Interact(closestInteractable);
@@ -80,7 +80,7 @@ namespace Project.PlayerCharacter
             }
         }
 
-        private List<Interactable> FindInteractablesInRange()
+        private List<Interactable> GetInteractablesInRange()
         {
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, interactionRange);
             List<Interactable> interactablesInRange = new List<Interactable>();
@@ -107,7 +107,7 @@ namespace Project.PlayerCharacter
             return interactablesInRange;
         }
 
-        private List<Interactable> NonObscuredInteractables(List<Interactable> interactables)
+        private List<Interactable> GetNonObscuredInteractables(List<Interactable> interactables)
         {
             Stack<Interactable> interactablesToRemove = new Stack<Interactable>();
             

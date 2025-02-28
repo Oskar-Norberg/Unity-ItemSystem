@@ -60,7 +60,7 @@ namespace Project.InventorySystem.UI
                 InventoryEntry inventoryEntryComponent = inventoryEntry.GetComponent<InventoryEntry>();
 
                 _inventoryEntries.Add(inventoryEntryComponent);
-                inventoryEntryComponent.SetItem(inventory.GetItem(i));
+                inventoryEntryComponent.SetItem(inventory.GetInventorySlot(i));
             }
         }
 

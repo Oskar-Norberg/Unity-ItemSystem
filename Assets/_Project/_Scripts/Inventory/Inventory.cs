@@ -9,13 +9,13 @@ namespace Project.InventorySystem
         public int MaxInventorySize => maxInventorySize;
         
         [SerializeField] private int maxInventorySize = 25;
-        private List<InventoryItem> _items = new();
+        private List<InventorySlot> _inventorySlots = new();
 
         private void Awake()
         {
             for (int i = 0; i < maxInventorySize; i++)
             {
-                _items.Add(new InventoryItem(null, 0));
+                _inventorySlots.Add(new InventorySlot(null, 0));
             }
         }
         
@@ -35,7 +35,7 @@ namespace Project.InventorySystem
         private bool AddStackableItem(StackableItemData itemData)
         {
             // Find if an existing, non-full stack exists
-            foreach (var item in _items)
+            foreach (var item in _inventorySlots)
             {
                 if (item.ItemData == itemData)
                 {
@@ -56,19 +56,19 @@ namespace Project.InventorySystem
             return TryAddItem(itemData);
         }
 
-        public InventoryItem GetItem(int index)
+        public InventorySlot GetInventorySlot(int index)
         {
-            return _items[index];
+            return _inventorySlots[index];
         }
 
-        public List<InventoryItem> GetItems()
+        public List<InventorySlot> GetInventorySlots()
         {
-            return _items;
+            return _inventorySlots;
         }
 
         private bool TryAddItem(ItemData itemdata)
         {
-            foreach (var item in _items)
+            foreach (var item in _inventorySlots)
             {
                 if (item.ItemData == null)
                 {
@@ -80,18 +80,18 @@ namespace Project.InventorySystem
             return false;
         }
 
-        private bool TryGetItem(ItemData itemData, out InventoryItem inventoryItem)
+        private bool TryGetItem(ItemData itemData, out InventorySlot inventorySlot)
         {
-            foreach (var item in _items)
+            foreach (var item in _inventorySlots)
             {
                 if (item.ItemData == itemData)
                 {
-                    inventoryItem = item;
+                    inventorySlot = item;
                     return true;
                 }
             }
 
-            inventoryItem = null;
+            inventorySlot = null;
             return false;
         }
     }

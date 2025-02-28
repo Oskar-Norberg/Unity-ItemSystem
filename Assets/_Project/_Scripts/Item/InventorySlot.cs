@@ -2,15 +2,15 @@ using Project.ItemSystem;
 
 namespace Project.InventorySystem
 {
-    public class InventoryItem
+    public class InventorySlot
     {
         public ItemData ItemData { get; private set; }
         public int Amount { get; private set; }
         
-        public delegate void ItemSetEventHandler(InventoryItem inventoryItem);
+        public delegate void ItemSetEventHandler(InventorySlot inventorySlot);
         public event ItemSetEventHandler OnItemSet;
 
-        public InventoryItem(ItemData itemData, int amount)
+        public InventorySlot(ItemData itemData, int amount)
         {
             ItemData = itemData;
             Amount = amount;

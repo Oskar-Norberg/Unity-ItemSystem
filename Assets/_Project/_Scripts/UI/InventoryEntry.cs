@@ -11,23 +11,23 @@ namespace Project.InventorySystem.UI
         [SerializeField] private TextMeshProUGUI countText;
         [SerializeField] private Image image;
         
-        private InventoryItem _inventoryItem;
+        private InventorySlot _inventorySlot;
         
-        public void SetItem(InventoryItem inventoryItem)
+        public void SetItem(InventorySlot inventorySlot)
         {
-            inventoryItem.OnItemSet += UpdateItem;
-            UpdateItem(inventoryItem);
+            inventorySlot.OnItemSet += UpdateItem;
+            UpdateItem(inventorySlot);
         }
 
-        private void UpdateItem(InventoryItem inventoryItem)
+        private void UpdateItem(InventorySlot inventorySlot)
         {
-            if (inventoryItem == null || inventoryItem.ItemData == null)
+            if (inventorySlot == null || inventorySlot.ItemData == null)
                 return;
             
-            if (inventoryItem.ItemData is StackableItemData)
-                countText.text = "x" + inventoryItem.Amount;
+            if (inventorySlot.ItemData is StackableItemData)
+                countText.text = "x" + inventorySlot.Amount;
             
-            image.sprite = inventoryItem.ItemData.itemSprite;
+            image.sprite = inventorySlot.ItemData.itemSprite;
         }
     }
 }

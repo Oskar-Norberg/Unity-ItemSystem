@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 namespace Project.InventorySystem.UI
 {
-    // TODO: These should be linked to inventory slots rather than the items themselves. Look into creating an observable list for the inventory.
     public class InventoryEntry : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI countText;

@@ -39,7 +39,7 @@ namespace Project.InventorySystem
             {
                 if (item.ItemData == itemData)
                 {
-                    if (item.Amount < itemData.maxStack)
+                    if (item.Amount < itemData.maxStackSize)
                     {
                         item.IncreaseStackSize(1);
                         return true;

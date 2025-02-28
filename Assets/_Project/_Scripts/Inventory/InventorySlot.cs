@@ -36,7 +36,8 @@ namespace Project.InventorySystem
 
         public void Drop()
         {
-            _inventory.DropItem(this);
+            if (ItemData)
+                _inventory.DropItem(this);
         }
     }
 }

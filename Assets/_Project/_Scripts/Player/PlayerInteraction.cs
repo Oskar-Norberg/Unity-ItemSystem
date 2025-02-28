@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Project.InteractableSystem;
 using UnityEngine;
@@ -41,17 +42,26 @@ namespace Project.PlayerCharacter
                 return;
             
             List<Interactable> nonObscuredInteractables = NonObscuredInteractables(interactablesInRange);
-            
-            List<Interactable> interactablesInAngle = InteractablesInAngle(nonObscuredInteractables);
-            
-            // TODO: This should find all interactibles of the hightest prio group.
-            // Then filter based on angle from viewport center
-            Interactable highestPriorityInteractable = GetHighestPriorityInteractable(interactablesInAngle);
+            Interactable closestInteractable = GetClosestInteractableByAngle(nonObscuredInteractables);
                 
-            if (highestPriorityInteractable != null)
-                Interact(highestPriorityInteractable);
+            Interact(closestInteractable);
         }
-        
+
+        private void Update()
+        {
+            VerifyCachedInteractables();
+
+            List<Interactable> interactablesInRange = FindInteractablesInRange();
+            
+            if (interactablesInRange.Count == 0)
+                return;
+            
+            List<Interactable> nonObscuredInteractables = NonObscuredInteractables(interactablesInRange);
+            Interactable closestInteractableByAngle = GetClosestInteractableByAngle(nonObscuredInteractables);
+            
+            print(closestInteractableByAngle.name);
+        }
+
         private void Interact(Interactable interactable)
         {
             _canInteract = false;
@@ -150,37 +160,21 @@ namespace Project.PlayerCharacter
             return interactables;
         }
 
-        private List<Interactable> InteractablesInAngle(List<Interactable> interactables)
+        private Interactable GetClosestInteractableByAngle(List<Interactable> interactables)
         {
-            List<Interactable> interactablesInAngle = new List<Interactable>();
+            List<Tuple<Interactable, float>> interactablesByAngle = new ();
             
-            print(interactables.Count);
             foreach (var interactable in interactables)
             {
                 Vector3 directionToInteractable = interactable.transform.position - interactOrigin.position;
                 float angleToInteractable = Vector3.Angle(interactOrigin.forward, directionToInteractable);
                 
-                if (angleToInteractable <= interactionAngle)
-                    interactablesInAngle.Add(interactable);
+                interactablesByAngle.Add(new Tuple<Interactable, float>(interactable, angleToInteractable));
             }
             
-            return interactablesInAngle;
-        }
-
-        private Interactable GetHighestPriorityInteractable(List<Interactable> interactables)
-        {
-            if (interactables.Count == 0)
-                return null;
+            interactablesByAngle.Sort((a, b) => a.Item2.CompareTo(b.Item2));
             
-            Interactable highestPriorityInteractable = interactables[0];
-            
-            foreach (var interactable in interactables)
-            {
-                if (interactable.Priority > highestPriorityInteractable.Priority)
-                    highestPriorityInteractable = interactable;
-            }
-
-            return highestPriorityInteractable;
+            return interactablesByAngle[0].Item1;
         }
         
         #endregion

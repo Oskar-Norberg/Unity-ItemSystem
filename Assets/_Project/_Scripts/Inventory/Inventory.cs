@@ -12,12 +12,7 @@ namespace Project.InventorySystem
 
         protected void Awake()
         {
-            _inventorySlots = new InventorySlot[startingInventorySize];
-
-            for (int i = 0; i < startingInventorySize; i++)
-            {
-                _inventorySlots[i] = new InventorySlot(this, null, 0);
-            }
+            InitializeInventorySlots();
         }
 
         public bool AddItem(ItemData itemData)
@@ -60,14 +55,15 @@ namespace Project.InventorySystem
         {
             foreach (var item in _inventorySlots)
             {
-                if (item.ItemData == itemData)
-                {
-                    if (item.Amount < itemData.maxStackSize)
-                    {
-                        item.IncrementStackSize(1);
-                        return true;
-                    }
-                }
+                if (item.ItemData != itemData) 
+                    continue;
+
+                if (item.Amount >= itemData.maxStackSize) 
+                    continue;
+                
+                item.IncrementStackSize(1);
+                
+                return true;
             }
 
             return TryAddItem(itemData);
@@ -76,6 +72,16 @@ namespace Project.InventorySystem
         private bool AddNonStackableItem(ItemData itemData)
         {
             return TryAddItem(itemData);
+        }
+
+        private void InitializeInventorySlots()
+        {
+            _inventorySlots = new InventorySlot[startingInventorySize];
+
+            for (int i = 0; i < startingInventorySize; i++)
+            {
+                _inventorySlots[i] = new InventorySlot(this, null, 0);
+            }
         }
 
         private bool TryAddItem(ItemData itemdata)
@@ -92,29 +98,12 @@ namespace Project.InventorySystem
             return false;
         }
 
-        private bool TryGetItem(ItemData itemData, out InventorySlot inventorySlot)
-        {
-            foreach (var item in _inventorySlots)
-            {
-                if (item.ItemData == itemData)
-                {
-                    inventorySlot = item;
-                    return true;
-                }
-            }
-
-            inventorySlot = null;
-            return false;
-        }
-
         private bool DragStackableItem(InventorySlot from, InventorySlot to)
         {
-            StackableItemData fromData = from.ItemData as StackableItemData;
-            StackableItemData toData = to.ItemData as StackableItemData;
-
-            if (fromData == null || toData == null)
+            if (!(from.ItemData is StackableItemData fromData 
+                  && to.ItemData is StackableItemData toData))
                 return false;
-
+            
             int amountToMove = Mathf.Min(from.Amount, toData.maxStackSize - to.Amount);
 
             from.IncrementStackSize(-amountToMove);
@@ -132,7 +121,6 @@ namespace Project.InventorySystem
             var tempToAmount = to.Amount;
 
             to.SetItem(from.ItemData, from.Amount);
-
             from.SetItem(tempToData, tempToAmount);
 
             return true;

@@ -119,18 +119,14 @@ namespace Project.ItemSystem.Editor.Tools
         
         private bool CreateItemCommon(ItemData itemData)
         {
-            var itemGameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            var itemComponent = itemGameObject.AddComponent<Item>();
-            
-            itemData.name = _itemName;
-            itemData.sprite = _itemSprite;
-            itemData.prefab = itemGameObject;
-
             AssetDatabase.CreateFolder(GetTypeSubFolder(_typeSelectionIndex), _itemName.Trim(' ').Trim());
             string newSubFolder = GetTypeSubFolder(_typeSelectionIndex) + "/" + _itemName.Trim(' ').Trim() + "/";
-
+            
             // Save Item Data
             AssetDatabase.CreateAsset(itemData, newSubFolder + _itemName + ".asset");
+            
+            var itemGameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            var itemComponent = itemGameObject.AddComponent<Item>();
             
             var itemDataField = typeof(Item).GetField("itemData", BindingFlags.NonPublic | BindingFlags.Instance);
             if (itemDataField == null)
@@ -141,7 +137,14 @@ namespace Project.ItemSystem.Editor.Tools
 
             itemDataField.SetValue(itemComponent, itemData);
             
-            PrefabUtility.SaveAsPrefabAsset(itemGameObject, newSubFolder + _itemName + ".prefab");
+            // Save GameObject as prefab
+            var itemPrefab = PrefabUtility.SaveAsPrefabAsset(itemGameObject, newSubFolder + _itemName + ".prefab");
+            
+            itemData.name = _itemName;
+            itemData.sprite = _itemSprite;
+            itemData.prefab = itemPrefab;
+            
+            // Save Changes
             AssetDatabase.SaveAssets();
             
             DestroyImmediate(itemGameObject);

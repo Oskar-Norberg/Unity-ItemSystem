@@ -24,6 +24,7 @@ namespace Project.InventorySystem.UI
             _defaultSprite = image.sprite;
         }
 
+        // TODO: make it so you cant drag and drop empty slots
         public void OnBeginDrag(PointerEventData eventData)
         {
             StartDrag(eventData);

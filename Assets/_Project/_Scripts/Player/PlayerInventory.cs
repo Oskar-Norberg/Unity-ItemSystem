@@ -1,4 +1,5 @@
 using Project.InventorySystem;
+using Project.InventorySystem.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -20,22 +21,32 @@ namespace Project.PlayerCharacter
                 return _instance;
             }
         }
+
+        public InventoryNavigationManager InventoryNavigationManager { get; private set; }
         
         private static PlayerInventory _instance;
         
         public delegate void OnInventoryEventHandler(Inventory inventory);
-        public event OnInventoryEventHandler OnInventoryEvent;
 
         private new void Awake()
         {
+            if (_instance == null)
+            {
+                _instance = this;
+            }
+            else
+            {
+                Destroy(gameObject);
+                return;
+            }
+            
             base.Awake();
             
-            if (_instance == null)
-                _instance = this;
-            else
-                Destroy(gameObject);
+            InventoryNavigationManager = new InventoryNavigationManager(this);
         }
-        
+
+        public event OnInventoryEventHandler OnInventoryEvent;
+
         private void OnInventory(InputValue submitValue)
         {
             if (!submitValue.isPressed)

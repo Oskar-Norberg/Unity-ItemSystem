@@ -1,29 +1,60 @@
 using Project.ItemSystem;
+using Project.PlayerCharacter;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Project.InventorySystem.UI
 {
-    public class InventoryEntry : MonoBehaviour
+    public class InventoryEntry : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
     {
         [SerializeField] private TextMeshProUGUI countText;
         [SerializeField] private Image image;
-        
+
         private InventorySlot _inventorySlot;
         private Sprite _defaultSprite;
+
+        private Transform _originalParent;
+        private Vector3 _originalPosition;
 
         private void Awake()
         {
             _defaultSprite = image.sprite;
         }
 
-        // TODO: Rename this to SetInventorySlot, doesnt set an item. It sets the slot to represent.
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            _originalParent = image.transform.parent;
+            _originalPosition = image.transform.position;
+            image.transform.SetParent(transform.root);
+            image.raycastTarget = false;
+            
+            PlayerInventory.Instance.InventoryNavigationManager.OnBeginDrag(_inventorySlot);
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            image.transform.position = eventData.position;
+        }
+
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            image.transform.SetParent(_originalParent);
+            image.transform.position = _originalPosition;
+            image.raycastTarget = true;
+        }
+
+        public void OnDrop(PointerEventData eventData)
+        {
+            PlayerInventory.Instance.InventoryNavigationManager.OnFinishDrag(_inventorySlot);
+        }
+
         public void SetInventorySlot(InventorySlot inventorySlot)
         {
             if (_inventorySlot != null)
                 _inventorySlot.OnItemSet -= UpdateItem;
-            
+
             _inventorySlot = inventorySlot;
             inventorySlot.OnItemSet += UpdateItem;
             UpdateItem(inventorySlot);
@@ -36,22 +67,25 @@ namespace Project.InventorySystem.UI
 
         private void UpdateItem(InventorySlot inventorySlot)
         {
+            ResetEntry();
+
             if (inventorySlot == null)
                 return;
 
             if (inventorySlot.ItemData == null)
-            {
-                countText.text = string.Empty;
-                image.sprite = _defaultSprite;
-            }
-            else
-            {
-                if (inventorySlot.ItemData is StackableItemData)
-                    countText.text = "x" + inventorySlot.Amount;
-            
-                if (inventorySlot.ItemData.sprite)
-                    image.sprite = inventorySlot.ItemData.sprite;
-            }
+                return;
+
+            if (inventorySlot.ItemData is StackableItemData)
+                countText.text = "x" + inventorySlot.Amount;
+
+            if (inventorySlot.ItemData.sprite)
+                image.sprite = inventorySlot.ItemData.sprite;
+        }
+
+        private void ResetEntry()
+        {
+            countText.text = string.Empty;
+            image.sprite = _defaultSprite;
         }
     }
 }

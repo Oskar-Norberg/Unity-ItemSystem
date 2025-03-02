@@ -124,26 +124,23 @@ namespace Project.PlayerCharacter
 
         private List<Interactable> GetNonObscuredInteractables(List<Interactable> interactables)
         {
-            Stack<Interactable> interactablesToRemove = new Stack<Interactable>();
-            
+            List<Interactable> nonObscuredInteractables = new List<Interactable>();
+
             foreach (var interactable in interactables)
             {
                 Vector3 directionToInteractable = interactable.transform.position - interactOrigin.position;
                 float distanceToInteractable = directionToInteractable.magnitude;
+
+                if (!Physics.Raycast(interactOrigin.position, directionToInteractable, out var hit, distanceToInteractable)) 
+                    continue;
                 
-                if (Physics.Raycast(interactOrigin.position, directionToInteractable, out var hit, distanceToInteractable))
-                {
-                    if (hit.collider.gameObject != interactable.gameObject)
-                        interactablesToRemove.Push(interactable);
-                }
+                if (hit.collider.gameObject != interactable.gameObject)
+                    continue;
+                
+                nonObscuredInteractables.Add(interactable);
             }
 
-            while (interactablesToRemove.Count > 0)
-            {
-                interactables.Remove(interactablesToRemove.Pop());
-            }
-
-            return interactables;
+            return nonObscuredInteractables;
         }
 
         private Interactable GetClosestInteractableByAngle(List<Interactable> interactables)

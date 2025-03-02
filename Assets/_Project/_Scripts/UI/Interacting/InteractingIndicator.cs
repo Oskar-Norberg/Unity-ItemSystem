@@ -1,16 +1,27 @@
+using Project.InteractableSystem;
+using Project.PlayerCharacter;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class InteractingIndicator : MonoBehaviour
+namespace Project.InventorySystem.UI
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public class InteractingIndicator : MonoBehaviour
     {
+        [SerializeField] private Image image;
         
-    }
+        private void OnEnable()
+        {
+            Player.Instance.PlayerInteraction.OnInteractableHover += OnInteractableHover;
+        }
+    
+        private void OnDisable()
+        {
+            Player.Instance.PlayerInteraction.OnInteractableHover -= OnInteractableHover;
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        private void OnInteractableHover(Interactable interactable)
+        {
+            image.enabled = interactable != null;
+        }
     }
 }

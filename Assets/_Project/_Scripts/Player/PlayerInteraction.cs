@@ -10,6 +10,9 @@ namespace Project.PlayerCharacter
     public class PlayerInteraction : MonoBehaviour
     {
         public bool IsInteracting => _currentInteractable != null;
+        
+        public delegate void OnInteractableHoverEventHandler(Interactable interactable);
+        public event OnInteractableHoverEventHandler OnInteractableHover;
 
         [SerializeField] private Transform interactOrigin;
         
@@ -44,6 +47,8 @@ namespace Project.PlayerCharacter
             
             List<Interactable> nonObscuredInteractables = GetNonObscuredInteractables(interactablesInRange);
             Interactable closestInteractable = GetClosestInteractableByAngle(nonObscuredInteractables);
+            
+            OnInteractableHover?.Invoke(closestInteractable);
 
             if (!closestInteractable)
                 return;

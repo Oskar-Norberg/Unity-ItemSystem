@@ -22,8 +22,8 @@ namespace Project.PlayerCharacter
 
         private static Player _instance;
         
-        private PlayerMovement _playerMovement;
-        private PlayerInteraction _playerInteraction;
+        public PlayerMovement PlayerMovement { get; private set; }
+        public PlayerInteraction PlayerInteraction { get; private set; }
     
         private void Awake()
         {
@@ -37,8 +37,8 @@ namespace Project.PlayerCharacter
                 return;
             }
             
-            _playerMovement = GetComponent<PlayerMovement>();
-            _playerInteraction = GetComponent<PlayerInteraction>();
+            PlayerMovement = GetComponent<PlayerMovement>();
+            PlayerInteraction = GetComponent<PlayerInteraction>();
         }
     }
 }

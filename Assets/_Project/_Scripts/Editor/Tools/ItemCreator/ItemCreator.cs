@@ -93,23 +93,31 @@ namespace Project.ItemSystem.Editor.Tools
 
         private void CreateItem()
         {
-            bool created = false;
+            string path = string.Empty;
             
-            created = _isStackable ? CreateStackableItem() : CreateNonStackableItem();
+            path = _isStackable ? CreateStackableItem() : CreateNonStackableItem();
             
-            if (created)
+            if (path != string.Empty)
             {
-                GUILayout.Label("Item created successfully!");
+                if (path.EndsWith("/"))
+                    path = path.Remove(path.Length - 1);
+                
+                var folder = AssetDatabase.LoadAssetAtPath<Object>(path);
+                if (folder != null)
+                {
+                    Selection.activeObject = folder;
+                    EditorGUIUtility.PingObject(folder);
+                }
             }
         }
 
-        private bool CreateNonStackableItem()
+        private string CreateNonStackableItem()
         {
             NonStackableItemData itemData = ScriptableObject.CreateInstance<NonStackableItemData>();
             return CreateItemCommon(itemData as ItemData);
         }
         
-        private bool CreateStackableItem()
+        private string CreateStackableItem()
         {
             StackableItemData itemData = ScriptableObject.CreateInstance<StackableItemData>();
             itemData.maxStackSize = _maxStackSize;
@@ -117,7 +125,8 @@ namespace Project.ItemSystem.Editor.Tools
             return CreateItemCommon(itemData as ItemData);
         }
         
-        private bool CreateItemCommon(ItemData itemData)
+        // TODO: Clean up on failure
+        private string CreateItemCommon(ItemData itemData)
         {
             AssetDatabase.CreateFolder(GetTypeSubFolder(_typeSelectionIndex), _itemName.Trim(' ').Trim());
             string newSubFolder = GetTypeSubFolder(_typeSelectionIndex) + "/" + _itemName.Trim(' ').Trim() + "/";
@@ -132,7 +141,7 @@ namespace Project.ItemSystem.Editor.Tools
             if (itemDataField == null)
             {
                 Debug.LogError("Could not find itemData field in Item.cs");
-                return false;
+                return string.Empty;
             }
 
             itemDataField.SetValue(itemComponent, itemData);
@@ -148,8 +157,8 @@ namespace Project.ItemSystem.Editor.Tools
             AssetDatabase.SaveAssets();
             
             DestroyImmediate(itemGameObject);
-            
-            return true;
+
+            return newSubFolder;
         }
 
         private string GetTypeSubFolder(int index)

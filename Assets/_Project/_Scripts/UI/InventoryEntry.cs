@@ -22,7 +22,6 @@ namespace Project.InventorySystem.UI
         
         public void OnBeginDrag(PointerEventData eventData)
         {
-            print("begin drag");
             PlayerInventory.Instance.InventoryNavigationManager.OnBeginDrag(_inventorySlot);
         }
 
@@ -33,7 +32,6 @@ namespace Project.InventorySystem.UI
         
         public void OnDrop(PointerEventData eventData)
         {
-            print("end drag");
             PlayerInventory.Instance.InventoryNavigationManager.OnFinishDrag(_inventorySlot);
         }
 

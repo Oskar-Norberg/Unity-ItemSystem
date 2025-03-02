@@ -15,6 +15,7 @@ namespace Project.InventorySystem.UI
         private InventorySlot _inventorySlot;
         private Sprite _defaultSprite;
 
+        // Dragging and dropping
         private Transform _originalParent;
         private Vector3 _originalPosition;
 
@@ -25,24 +26,17 @@ namespace Project.InventorySystem.UI
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            _originalParent = image.transform.parent;
-            _originalPosition = image.transform.position;
-            image.transform.SetParent(transform.root);
-            image.raycastTarget = false;
-            
-            PlayerInventory.Instance.InventoryNavigationManager.OnBeginDrag(_inventorySlot);
+            StartDrag(eventData);
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            image.transform.position = eventData.position;
+            Drag(eventData);
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            image.transform.SetParent(_originalParent);
-            image.transform.position = _originalPosition;
-            image.raycastTarget = true;
+            EndDrag();
         }
 
         public void OnDrop(PointerEventData eventData)
@@ -69,10 +63,7 @@ namespace Project.InventorySystem.UI
         {
             ResetEntry();
 
-            if (inventorySlot == null)
-                return;
-
-            if (inventorySlot.ItemData == null)
+            if (inventorySlot == null || inventorySlot.ItemData == null)
                 return;
 
             if (inventorySlot.ItemData is StackableItemData)
@@ -86,6 +77,28 @@ namespace Project.InventorySystem.UI
         {
             countText.text = string.Empty;
             image.sprite = _defaultSprite;
+        }
+
+        private void StartDrag(PointerEventData eventData)
+        {
+            _originalParent = image.transform.parent;
+            _originalPosition = image.transform.position;
+            image.transform.SetParent(transform.root);
+            image.raycastTarget = false;
+
+            PlayerInventory.Instance.InventoryNavigationManager.OnBeginDrag(_inventorySlot);
+        }
+
+        private void Drag(PointerEventData eventData)
+        {
+            image.transform.position = eventData.position;
+        }
+
+        private void EndDrag()
+        {
+            image.transform.SetParent(_originalParent);
+            image.transform.position = _originalPosition;
+            image.raycastTarget = true;
         }
     }
 }

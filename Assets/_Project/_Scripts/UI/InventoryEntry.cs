@@ -59,10 +59,13 @@ namespace Project.InventorySystem.UI
             
             if (inventorySlot == null)
                 return;
+            
+            if (inventorySlot.ItemData == null)
+                return;
 
             if (inventorySlot.ItemData is StackableItemData)
                 countText.text = "x" + inventorySlot.Amount;
-        
+            
             if (inventorySlot.ItemData.sprite)
                 image.sprite = inventorySlot.ItemData.sprite;
         }

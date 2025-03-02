@@ -55,22 +55,22 @@ namespace Project.InventorySystem.UI
 
         private void UpdateItem(InventorySlot inventorySlot)
         {
+            ResetEntry();
+            
             if (inventorySlot == null)
                 return;
 
-            if (inventorySlot.ItemData == null)
-            {
-                countText.text = string.Empty;
-                image.sprite = _defaultSprite;
-            }
-            else
-            {
-                if (inventorySlot.ItemData is StackableItemData)
-                    countText.text = "x" + inventorySlot.Amount;
-            
-                if (inventorySlot.ItemData.sprite)
-                    image.sprite = inventorySlot.ItemData.sprite;
-            }
+            if (inventorySlot.ItemData is StackableItemData)
+                countText.text = "x" + inventorySlot.Amount;
+        
+            if (inventorySlot.ItemData.sprite)
+                image.sprite = inventorySlot.ItemData.sprite;
+        }
+
+        private void ResetEntry()
+        {
+            countText.text = string.Empty;
+            image.sprite = _defaultSprite;
         }
     }
 }

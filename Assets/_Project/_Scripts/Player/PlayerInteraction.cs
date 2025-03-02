@@ -54,8 +54,6 @@ namespace Project.PlayerCharacter
         {
             _closestInteractable = null;
             
-            VerifyCachedInteractables();
-
             List<Interactable> interactablesInRange = GetInteractablesInRange();
             List<Interactable> nonObscuredInteractables = GetNonObscuredInteractables(interactablesInRange);
             Interactable closestInteractable = GetClosestInteractableByAngle(nonObscuredInteractables);
@@ -97,6 +95,8 @@ namespace Project.PlayerCharacter
 
         private List<Interactable> GetInteractablesInRange()
         {
+            VerifyCachedInteractables();
+            
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, interactionRange);
             List<Interactable> interactablesInRange = new List<Interactable>();
             

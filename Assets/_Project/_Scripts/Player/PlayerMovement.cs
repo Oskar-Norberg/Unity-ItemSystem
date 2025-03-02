@@ -18,9 +18,6 @@ namespace Project.PlayerCharacter
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody>();
-            
-            // TODO: This is very temporary, should happen in a GameManager
-            //Cursor.lockState = CursorLockMode.Locked;
         }
         
         private void OnMove(InputValue movementValue) {

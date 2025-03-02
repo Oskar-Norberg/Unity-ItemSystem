@@ -9,15 +9,13 @@ namespace Project.PlayerCharacter
     [RequireComponent(typeof(PlayerInput))]
     public class PlayerInteraction : MonoBehaviour
     {
+        public Interactable CurrentlyClosestInteractable => _closestInteractable;
         public bool IsInteracting => _currentlyInteractingInteractable != null;
-        
-        public delegate void OnInteractableHoverEventHandler(Interactable interactable);
-        public event OnInteractableHoverEventHandler OnInteractableHover;
 
         [SerializeField] private Transform interactOrigin;
         
         // Angle from center of viewport to the left and right
-        [SerializeField] private float interactionAngle = 25.0f;
+        [SerializeField] private float interactionAngle = 17.5f;
         [SerializeField] private float interactionRange = 10.0f;
 
         private Dictionary<GameObject, Interactable> _cachedInteractables = new Dictionary<GameObject, Interactable>();
@@ -63,7 +61,6 @@ namespace Project.PlayerCharacter
             Interactable closestInteractable = GetClosestInteractableByAngle(nonObscuredInteractables);
 
             _closestInteractable = closestInteractable;
-            OnInteractableHover?.Invoke(closestInteractable);
         }
 
         private void Interact(Interactable interactable)

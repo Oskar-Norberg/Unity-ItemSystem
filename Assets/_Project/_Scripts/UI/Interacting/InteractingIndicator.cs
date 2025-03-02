@@ -16,22 +16,11 @@ namespace Project.InventorySystem.UI
             _defaultSprite = image.sprite;
         }
 
-        private void OnEnable()
+        private void Update()
         {
-            Player.Instance.PlayerInteraction.OnInteractableHover += OnInteractableHover;
-        }
-    
-        private void OnDisable()
-        {
-            Player.Instance.PlayerInteraction.OnInteractableHover -= OnInteractableHover;
-        }
-
-        private void OnInteractableHover(Interactable interactable)
-        {
+            var interactable = Player.Instance.PlayerInteraction.CurrentlyClosestInteractable;
             image.enabled = interactable != null;
-
-            var sprite = interactable is Item item ? item.ItemData.sprite : _defaultSprite;
-            image.sprite = sprite;
+            image.sprite = interactable is Item item ? item.ItemData.sprite : _defaultSprite;
         }
     }
 }

@@ -68,7 +68,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactOrigin: {fileID: 84832296328753638}
-  interactionAngle: 30
+  interactionAngle: 17.5
   interactionRange: 4
 --- !u!114 &2341650441563983436
 MonoBehaviour:
@@ -94,6 +94,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ded6eeeae4eff54e86b24b13300d6eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startingInventorySize: 25
 --- !u!114 &6981673218871555767
 MonoBehaviour:
   m_ObjectHideFlags: 0

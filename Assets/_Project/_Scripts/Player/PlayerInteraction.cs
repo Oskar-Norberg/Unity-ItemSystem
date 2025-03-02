@@ -9,7 +9,10 @@ namespace Project.PlayerCharacter
     [RequireComponent(typeof(PlayerInput))]
     public class PlayerInteraction : MonoBehaviour
     {
-        public bool IsInteracting => _currentInteractable != null;
+        public bool IsInteracting => _currentlyInteractingInteractable != null;
+        
+        public delegate void OnInteractableHoverEventHandler(Interactable interactable);
+        public event OnInteractableHoverEventHandler OnInteractableHover;
 
         [SerializeField] private Transform interactOrigin;
         
@@ -18,8 +21,10 @@ namespace Project.PlayerCharacter
         [SerializeField] private float interactionRange = 10.0f;
 
         private Dictionary<GameObject, Interactable> _cachedInteractables = new Dictionary<GameObject, Interactable>();
+        
+        private Interactable _closestInteractable;
 
-        private Interactable _currentInteractable;
+        private Interactable _currentlyInteractingInteractable;
         private bool _canInteract = true;
 
         private void Awake()
@@ -35,33 +40,43 @@ namespace Project.PlayerCharacter
             if (!submitValue.isPressed) 
                 return;
             
+            if (!_closestInteractable)
+                return;
+            
+            Interact(_closestInteractable);
+        }
+
+        private void Update()
+        {
+            FindInteractables();
+        }
+
+        // TODO: Isn't this really expensive to run every frame?
+        private void FindInteractables()
+        {
+            _closestInteractable = null;
+            
             VerifyCachedInteractables();
 
             List<Interactable> interactablesInRange = GetInteractablesInRange();
-            
-            if (interactablesInRange.Count == 0)
-                return;
-            
             List<Interactable> nonObscuredInteractables = GetNonObscuredInteractables(interactablesInRange);
             Interactable closestInteractable = GetClosestInteractableByAngle(nonObscuredInteractables);
 
-            if (!closestInteractable)
-                return;
-            
-            Interact(closestInteractable);
+            _closestInteractable = closestInteractable;
+            OnInteractableHover?.Invoke(closestInteractable);
         }
 
         private void Interact(Interactable interactable)
         {
             _canInteract = false;
-            _currentInteractable = interactable;
-            _currentInteractable.OnInteractionFinished += OnInteractionFinished;
+            _currentlyInteractingInteractable = interactable;
+            _currentlyInteractingInteractable.OnInteractionFinished += OnInteractionFinished;
             interactable.Interact(transform);
         }
         
         private void OnInteractionFinished()
         {
-            _currentInteractable.OnInteractionFinished -= OnInteractionFinished;
+            _currentlyInteractingInteractable.OnInteractionFinished -= OnInteractionFinished;
             _canInteract = true;
         }
 

@@ -6,13 +6,39 @@ namespace Project.PlayerCharacter
     [RequireComponent(typeof(PlayerInteraction))]
     public class Player : MonoBehaviour
     {
-        private PlayerMovement _playerMovement;
-        private PlayerInteraction _playerInteraction;
+        public static Player Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    Debug.LogWarning("Instance of " + nameof(Player) + " is null");
+                    return null;
+                }
+
+                return _instance;
+            }
+        }
+
+        private static Player _instance;
+        
+        public PlayerMovement PlayerMovement { get; private set; }
+        public PlayerInteraction PlayerInteraction { get; private set; }
     
         private void Awake()
         {
-            _playerMovement = GetComponent<PlayerMovement>();
-            _playerInteraction = GetComponent<PlayerInteraction>();
+            if (_instance == null)
+            {
+                _instance = this;
+            }
+            else
+            {
+                Destroy(gameObject);
+                return;
+            }
+            
+            PlayerMovement = GetComponent<PlayerMovement>();
+            PlayerInteraction = GetComponent<PlayerInteraction>();
         }
     }
 }

@@ -5,6 +5,7 @@ namespace Project.InteractableSystem
 {
     public class Item : Interactable
     {
+        public ItemData ItemData => itemData;
         [SerializeField] private ItemData itemData;
         
         public override void Interact(Transform interactor)

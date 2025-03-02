@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Project.InventorySystem
 {
+    //TODO: Please sort the methods in this class in the order of their access modifiers
     public class Inventory : MonoBehaviour
     {
         public int InventorySize => _inventorySlots.Length;
@@ -104,6 +105,45 @@ namespace Project.InventorySystem
 
             inventorySlot = null;
             return false;
+        }
+
+        public bool DragItem(InventorySlot from, InventorySlot to)
+        {
+            if (from.ItemData is StackableItemData && to.ItemData is StackableItemData)
+                return DragStackableItem(from, to);
+            else
+                return DragNonStackableItem(from, to);
+        }
+        
+        private bool DragStackableItem(InventorySlot from, InventorySlot to)
+        {
+            StackableItemData fromData = from.ItemData as StackableItemData;
+            StackableItemData toData = to.ItemData as StackableItemData;
+            
+            if (fromData == null || toData == null)
+                return false;
+            
+            int amountToMove = Mathf.Min(from.Amount, toData.maxStackSize - to.Amount);
+            
+            from.IncrementStackSize(-amountToMove);
+            to.IncrementStackSize(amountToMove);
+            
+            if (from.Amount == 0)
+                from.SetItem(null, 0);
+
+            return true;
+        }
+        
+        private bool DragNonStackableItem(InventorySlot from, InventorySlot to)
+        {
+            var tempToData = to.ItemData;
+            var tempToAmount = to.Amount;
+            
+            to.SetItem(from.ItemData, from.Amount);
+            
+            from.SetItem(tempToData, tempToAmount);
+
+            return true;
         }
     }
 }

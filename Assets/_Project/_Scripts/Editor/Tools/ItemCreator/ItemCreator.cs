@@ -5,11 +5,17 @@ namespace Project.ItemSystem.Editor.Tools
 {
     public class ItemCreator : EditorWindow
     {
+        // NO TRAILING SLASHES
+        private const string ItemPath = "Assets/_Project/Items";
+        
         private string _itemName = "Item Name";
         private Sprite _itemSprite;
 
         private bool _isStackable;
         private int _maxStackSize = 1;
+
+        private int _typeSelectionIndex;
+        private int _subfolderSelectionIndex;
 
         [MenuItem("Tools/Iteam Creator")]
         public static void ShowWindow()
@@ -54,6 +60,34 @@ namespace Project.ItemSystem.Editor.Tools
                     _maxStackSize = 1;
                 GUILayout.EndHorizontal();
             }
+            
+            ItemType();
+        }
+
+        private void ItemType()
+        {
+            string[] itemTypePaths = AssetDatabase.GetSubFolders(ItemPath);
+            
+            if (itemTypePaths.Length == 0)
+            {
+                Debug.LogError("No item types found in " + ItemPath + ", are you sure this folder is set up?");
+                return;
+            }
+            
+            string[] pathsToDisplay = new string[itemTypePaths.Length];
+
+            for (int i = 0; i < itemTypePaths.Length; i++)
+            {
+                int lastSlashIndex = itemTypePaths[i].LastIndexOf('/');
+                pathsToDisplay[i] = itemTypePaths[i].Substring(lastSlashIndex + 1);
+            }
+            
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Item Type", EditorStyles.label);
+        
+            _typeSelectionIndex = EditorGUILayout.Popup(_typeSelectionIndex, pathsToDisplay);
+            
+            GUILayout.EndHorizontal();
         }
 
         private void CreateItem()

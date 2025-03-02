@@ -17,8 +17,7 @@ namespace Project.InventorySystem.UI
         [SerializeField] private UnityEvent onInventoryClosed;
 
         private List<InventoryEntry> _inventoryEntries = new();
-
-        #region Events Subscription
+        
         private void Start()
         {
             Initialize(PlayerInventory.Instance);
@@ -26,7 +25,8 @@ namespace Project.InventorySystem.UI
             SetEntriesActive(false);
             onInventoryStarted?.Invoke();
         }
-        
+
+        #region Events Subscription
         private void OnEnable()
         {
             PlayerInventory.Instance.OnInventoryEvent += ToggleInventory;

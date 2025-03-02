@@ -22,11 +22,12 @@ namespace Project.PlayerCharacter
             }
         }
 
-        public InventoryNavigationManager InventoryNavigationManager { get; private set; }
-        
         private static PlayerInventory _instance;
-        
+
+        public InventoryNavigationManager InventoryNavigationManager { get; private set; }
+
         public delegate void OnInventoryEventHandler(Inventory inventory);
+        public event OnInventoryEventHandler OnInventoryEvent;
 
         private new void Awake()
         {
@@ -44,8 +45,6 @@ namespace Project.PlayerCharacter
             
             InventoryNavigationManager = new InventoryNavigationManager(this);
         }
-
-        public event OnInventoryEventHandler OnInventoryEvent;
 
         private void OnInventory(InputValue submitValue)
         {

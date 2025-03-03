@@ -17,7 +17,10 @@ namespace Project.ItemSystem.Editor.Tools
         private int _maxStackSize = 1;
         private int _typeSelectionIndex;
         private Vector2 _itemSelectionScrollPosition;
+        
         private string _modifyingPath = string.Empty;
+        
+        private bool IsModifying => !string.IsNullOrEmpty(_modifyingPath);
 
         [MenuItem("Tools/Item Creator")]
         public static void ShowWindow()
@@ -27,9 +30,23 @@ namespace Project.ItemSystem.Editor.Tools
 
         private void OnGUI()
         {
+            if (IsModifying)
+                StopModifying();
+            
             GUILayout.BeginHorizontal();
+            
             DrawItemList();
+
+            GUILayout.BeginVertical();
             DrawItemProperties();
+
+            if (IsModifying)
+                ModifyItem();
+            else
+                CreateItem();
+            
+            GUILayout.EndVertical();
+            
             GUILayout.EndHorizontal();
         }
 
@@ -40,7 +57,16 @@ namespace Project.ItemSystem.Editor.Tools
             _isStackable = false;
             _maxStackSize = 1;
             _typeSelectionIndex = 0;
+            
             _modifyingPath = string.Empty;
+        }
+
+        private void StopModifying()
+        {
+            if (GUILayout.Button("Stop Modifying"))
+            {
+                Reset();
+            }
         }
 
         private void DrawItemList()
@@ -70,6 +96,7 @@ namespace Project.ItemSystem.Editor.Tools
             GUILayout.BeginHorizontal();
             if (GUILayout.Button(path))
             {
+                _modifyingPath = path;
                 Debug.Log("Modify");
             }
             GUILayout.Label(GetSprite(path)?.texture, GUILayout.Width(50), GUILayout.Height(50));
@@ -118,7 +145,6 @@ namespace Project.ItemSystem.Editor.Tools
 
         private void DrawItemProperties()
         {
-            GUILayout.BeginVertical();
             GUILayout.Label("Item Creator", EditorStyles.boldLabel);
 
             _itemName = EditorGUILayout.TextField("Name", _itemName);
@@ -132,13 +158,6 @@ namespace Project.ItemSystem.Editor.Tools
             }
 
             DrawItemTypePopup();
-
-            if (GUILayout.Button("Create Item"))
-            {
-                CreateItem();
-            }
-
-            GUILayout.EndVertical();
         }
 
         private void DrawItemTypePopup()
@@ -163,17 +182,28 @@ namespace Project.ItemSystem.Editor.Tools
             GUILayout.EndHorizontal();
         }
 
+        private void ModifyItem()
+        {
+            if (GUILayout.Button("Modify Item"))
+            {
+                Debug.Log("Modify Item");
+            }
+        }
+
         private void CreateItem()
         {
-            string path = _isStackable ? CreateStackableItem() : CreateNonStackableItem();
-            if (!string.IsNullOrEmpty(path))
+            if (GUILayout.Button("Create Item"))
             {
-                if (path.EndsWith("/")) path = path.Remove(path.Length - 1);
-                var folder = AssetDatabase.LoadAssetAtPath<Object>(path);
-                if (folder != null)
+                string path = _isStackable ? CreateStackableItem() : CreateNonStackableItem();
+                if (!string.IsNullOrEmpty(path))
                 {
-                    Selection.activeObject = folder;
-                    EditorGUIUtility.PingObject(folder);
+                    if (path.EndsWith("/")) path = path.Remove(path.Length - 1);
+                    var folder = AssetDatabase.LoadAssetAtPath<Object>(path);
+                    if (folder != null)
+                    {
+                        Selection.activeObject = folder;
+                        EditorGUIUtility.PingObject(folder);
+                    }
                 }
             }
         }

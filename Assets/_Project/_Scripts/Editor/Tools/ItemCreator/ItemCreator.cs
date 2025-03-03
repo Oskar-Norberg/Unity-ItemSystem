@@ -15,7 +15,7 @@ namespace Project.ItemSystem.Editor.Tools
         private Sprite _itemSprite;
         private bool _isStackable;
         private int _maxStackSize = 1;
-        private int _typeSelectionIndex;
+        private int _typeSelectionIndex = -1;
         private Vector2 _itemSelectionScrollPosition;
         private string _modifyingPath = string.Empty;
 
@@ -52,7 +52,7 @@ namespace Project.ItemSystem.Editor.Tools
             _itemSprite = null;
             _isStackable = false;
             _maxStackSize = 1;
-            _typeSelectionIndex = 0;
+            _typeSelectionIndex = -1;
             _modifyingPath = string.Empty;
         }
 
@@ -112,6 +112,17 @@ namespace Project.ItemSystem.Editor.Tools
             _modifyingPath = path + path.Substring(lastSlashIndex) + ".asset";
             
             ItemData itemData = AssetDatabase.LoadAssetAtPath<ItemData>(_modifyingPath);
+
+            // get second last folder name
+            path = path.Substring(0, lastSlashIndex);
+            lastSlashIndex = path.LastIndexOf('/');
+            lastBackSlashIndex = path.LastIndexOf('\\');
+            if (lastBackSlashIndex > lastSlashIndex)
+                lastSlashIndex = lastBackSlashIndex;
+            path = path.Substring(lastSlashIndex + 1);
+            
+            Debug.Log(path);
+            _typeSelectionIndex = GetType(path);
 
             _itemName = itemData.name;
             _itemSprite = itemData.sprite;
@@ -286,6 +297,24 @@ namespace Project.ItemSystem.Editor.Tools
         {
             string[] itemTypePaths = AssetDatabase.GetSubFolders(ItemPath);
             return itemTypePaths[index];
+        }
+        
+        private int GetType(string path)
+        {
+            string[] itemTypePaths = AssetDatabase.GetSubFolders(ItemPath);
+            for (int i = 0; i < itemTypePaths.Length; i++)
+            {
+                // get last folder name
+                int lastSlashIndex = itemTypePaths[i].LastIndexOf('/');
+                int lastBackSlashIndex = itemTypePaths[i].LastIndexOf('\\');
+                if (lastBackSlashIndex > lastSlashIndex)
+                    lastSlashIndex = lastBackSlashIndex;
+                itemTypePaths[i] = itemTypePaths[i].Substring(lastSlashIndex + 1);
+                
+                if (itemTypePaths[i] == path)
+                    return i;
+            }
+            return -1;
         }
     }
 }

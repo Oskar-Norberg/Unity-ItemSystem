@@ -17,9 +17,8 @@ namespace Project.ItemSystem.Editor.Tools
         private int _maxStackSize = 1;
         private int _typeSelectionIndex;
         private Vector2 _itemSelectionScrollPosition;
-        
         private string _modifyingPath = string.Empty;
-        
+
         private bool IsModifying => !string.IsNullOrEmpty(_modifyingPath);
 
         [MenuItem("Tools/Item Creator")]
@@ -32,11 +31,9 @@ namespace Project.ItemSystem.Editor.Tools
         {
             if (IsModifying)
                 StopModifying();
-            
-            GUILayout.BeginHorizontal();
-            
-            DrawItemList();
 
+            GUILayout.BeginHorizontal();
+            DrawItemList();
             GUILayout.BeginVertical();
             DrawItemProperties();
 
@@ -44,9 +41,8 @@ namespace Project.ItemSystem.Editor.Tools
                 ModifyItem();
             else
                 CreateItem();
-            
+
             GUILayout.EndVertical();
-            
             GUILayout.EndHorizontal();
         }
 
@@ -57,16 +53,13 @@ namespace Project.ItemSystem.Editor.Tools
             _isStackable = false;
             _maxStackSize = 1;
             _typeSelectionIndex = 0;
-            
             _modifyingPath = string.Empty;
         }
 
         private void StopModifying()
         {
             if (GUILayout.Button("Stop Modifying"))
-            {
                 Reset();
-            }
         }
 
         private void DrawItemList()
@@ -96,11 +89,37 @@ namespace Project.ItemSystem.Editor.Tools
             GUILayout.BeginHorizontal();
             if (GUILayout.Button(path))
             {
-                _modifyingPath = path;
-                Debug.Log("Modify");
+                StartModifying(path);
             }
-            GUILayout.Label(GetSprite(path)?.texture, GUILayout.Width(50), GUILayout.Height(50));
+
+            Sprite sprite = GetSprite(path);
+            if (sprite)
+            {
+                Texture texture = sprite.texture;
+                if (texture)
+                    GUILayout.Label(texture, GUILayout.Width(50), GUILayout.Height(50));
+            }
             GUILayout.EndHorizontal();
+        }
+
+        private void StartModifying(string path)
+        {
+            int lastSlashIndex = path.LastIndexOf('/');
+            int lastBackSlashIndex = path.LastIndexOf('\\');
+            if (lastBackSlashIndex > lastSlashIndex)
+                lastSlashIndex = lastBackSlashIndex;
+            
+            _modifyingPath = path + path.Substring(lastSlashIndex) + ".asset";
+            
+            ItemData itemData = AssetDatabase.LoadAssetAtPath<ItemData>(_modifyingPath);
+
+            _itemName = itemData.name;
+            _itemSprite = itemData.sprite;
+
+            _isStackable = itemData is StackableItemData;
+
+            if (_isStackable)
+                _maxStackSize = ((StackableItemData)itemData).maxStackSize;
         }
 
         private string[] GetItemFolders()
@@ -186,7 +205,7 @@ namespace Project.ItemSystem.Editor.Tools
         {
             if (GUILayout.Button("Modify Item"))
             {
-                Debug.Log("Modify Item");
+                
             }
         }
 

@@ -24,6 +24,8 @@ namespace Project.ItemSystem.Editor.Tools
         
         private Vector2 _itemSelectionScrollPosition;
 
+        private string _modifyingPath = string.Empty;
+
         [MenuItem("Tools/Iteam Creator")]
         public static void ShowWindow()
         {
@@ -38,6 +40,17 @@ namespace Project.ItemSystem.Editor.Tools
             GetProperties();
             
             GUILayout.EndHorizontal();
+        }
+
+        private void Reset()
+        {
+            _itemName = "Item Name";
+            _itemSprite = null;
+            _isStackable = false;
+            _maxStackSize = 1;
+            _typeSelectionIndex = 0;
+            
+            _modifyingPath = string.Empty;
         }
 
         # region Item List
@@ -61,18 +74,29 @@ namespace Project.ItemSystem.Editor.Tools
                 
                 foreach (string folder in itemFolders)
                 {
-                    GUILayout.Label(folder, EditorStyles.label);
-                    GUILayout.Label(folder, EditorStyles.label);
-                    GUILayout.Label(folder, EditorStyles.label);
-                    GUILayout.Label(folder, EditorStyles.label);
-                    GUILayout.Label(folder, EditorStyles.label);
-                    GUILayout.Label(folder, EditorStyles.label);
+                    ModifyItem(folder);
                 }
                 
                 GUILayout.EndVertical();
                 EditorGUILayout.EndScrollView();
             }
             
+            GUILayout.EndVertical();
+        }
+
+        private void ModifyItem(string path)
+        {
+            GUILayout.BeginVertical();
+            GUILayout.BeginHorizontal();
+            
+            if (GUILayout.Button(path))
+            {
+                Debug.Log("Modify");
+            }
+            
+            GUILayout.Label(GetSprite(path).texture, GUILayout.Width(50), GUILayout.Height(50));
+            
+            GUILayout.EndHorizontal();
             GUILayout.EndVertical();
         }
 
@@ -112,6 +136,19 @@ namespace Project.ItemSystem.Editor.Tools
             }
 
             return dirs;
+        }
+        
+        private Sprite GetSprite(string path)
+        {
+            string[] paths = { path };
+            foreach (string guid in AssetDatabase.FindAssets("t:ScriptableObject", paths))
+            {
+                ItemData itemData = AssetDatabase.LoadAssetAtPath<ItemData>(AssetDatabase.GUIDToAssetPath(guid));
+                if (itemData)
+                    return itemData.sprite;
+            }
+
+            return null;
         }
         
         # endregion

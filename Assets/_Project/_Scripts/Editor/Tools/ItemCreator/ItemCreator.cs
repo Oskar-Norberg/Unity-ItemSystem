@@ -1,7 +1,10 @@
+using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using Project.InteractableSystem;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Timeline;
 
 namespace Project.ItemSystem.Editor.Tools
 {
@@ -17,6 +20,9 @@ namespace Project.ItemSystem.Editor.Tools
         private int _maxStackSize = 1;
 
         private int _typeSelectionIndex;
+        
+        
+        private Vector2 _itemSelectionScrollPosition;
 
         [MenuItem("Tools/Iteam Creator")]
         public static void ShowWindow()
@@ -26,16 +32,86 @@ namespace Project.ItemSystem.Editor.Tools
 
         private void OnGUI()
         {
+            GUILayout.BeginHorizontal();
+            
+            GetListOfItems();
             GetProperties();
             
-            if (GUILayout.Button("Create Item"))
-            {
-                CreateItem();
-            }
+            GUILayout.EndHorizontal();
         }
 
+        # region Item List
+        
+        private void GetListOfItems()
+        {
+            GUILayout.BeginVertical();
+            
+            GUILayout.Label("Items", EditorStyles.boldLabel);
+
+            string[] itemFolders = GetItemFolders();
+
+            if (itemFolders.Length == 0)
+            {
+                GUILayout.Label("No items found in " + ItemPath);
+            }
+            else
+            {
+                _itemSelectionScrollPosition = EditorGUILayout.BeginScrollView(_itemSelectionScrollPosition);
+                GUILayout.BeginVertical();
+                
+                foreach (string folder in itemFolders)
+                {
+                    GUILayout.Label(folder, EditorStyles.label);
+                    GUILayout.Label(folder, EditorStyles.label);
+                    GUILayout.Label(folder, EditorStyles.label);
+                    GUILayout.Label(folder, EditorStyles.label);
+                    GUILayout.Label(folder, EditorStyles.label);
+                    GUILayout.Label(folder, EditorStyles.label);
+                }
+                
+                GUILayout.EndVertical();
+                EditorGUILayout.EndScrollView();
+            }
+            
+            GUILayout.EndVertical();
+        }
+
+        private string[] GetItemFolders()
+        {
+            List<string> paths = new();
+
+            // Remove Assets/ from the path
+            string itemPath = ItemPath.Substring(ItemPath.IndexOf('/') + 1);
+            
+            string path = Path.Combine(Application.dataPath, itemPath);
+        
+            string[] dirs = Directory.GetDirectories(path, "*", SearchOption.AllDirectories);
+
+            // Convert from full-system paths to unity database Asset relative paths
+            for (int i = 0; i < dirs.Length; i++)
+            {
+                int start = dirs[i].LastIndexOf("Assets");
+            
+                if (start != -1)
+                {
+                    dirs[i] = dirs[i].Substring(start);
+                }
+                else
+                {
+                    dirs[i] = string.Empty;
+                }
+            }
+
+            return dirs;
+        }
+        
+        # endregion
+
+        # region Item Creation
         private void GetProperties()
         {
+            GUILayout.BeginVertical();
+            
             GUILayout.BeginHorizontal();
             GUILayout.Label("Item Creator", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
@@ -63,6 +139,13 @@ namespace Project.ItemSystem.Editor.Tools
             }
             
             ItemType();
+            
+            if (GUILayout.Button("Create Item"))
+            {
+                CreateItem();
+            }
+            
+            GUILayout.EndVertical();
         }
 
         private void ItemType()
@@ -166,5 +249,7 @@ namespace Project.ItemSystem.Editor.Tools
             string[] itemTypePaths = AssetDatabase.GetSubFolders(ItemPath);
             return itemTypePaths[index];
         }
+        
+        # endregion
     }
 }

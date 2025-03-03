@@ -108,20 +108,18 @@ namespace Project.ItemSystem.Editor.Tools
             int lastBackSlashIndex = path.LastIndexOf('\\');
             if (lastBackSlashIndex > lastSlashIndex)
                 lastSlashIndex = lastBackSlashIndex;
-            
+
             _modifyingPath = path + path.Substring(lastSlashIndex) + ".asset";
-            
+
             ItemData itemData = AssetDatabase.LoadAssetAtPath<ItemData>(_modifyingPath);
 
-            // get second last folder name
             path = path.Substring(0, lastSlashIndex);
             lastSlashIndex = path.LastIndexOf('/');
             lastBackSlashIndex = path.LastIndexOf('\\');
             if (lastBackSlashIndex > lastSlashIndex)
                 lastSlashIndex = lastBackSlashIndex;
             path = path.Substring(lastSlashIndex + 1);
-            
-            Debug.Log(path);
+
             _typeSelectionIndex = GetType(path);
 
             _itemName = itemData.name;
@@ -216,7 +214,7 @@ namespace Project.ItemSystem.Editor.Tools
         {
             if (GUILayout.Button("Modify Item"))
             {
-                
+                // Modify item logic here
             }
         }
 
@@ -298,19 +296,18 @@ namespace Project.ItemSystem.Editor.Tools
             string[] itemTypePaths = AssetDatabase.GetSubFolders(ItemPath);
             return itemTypePaths[index];
         }
-        
+
         private int GetType(string path)
         {
             string[] itemTypePaths = AssetDatabase.GetSubFolders(ItemPath);
             for (int i = 0; i < itemTypePaths.Length; i++)
             {
-                // get last folder name
                 int lastSlashIndex = itemTypePaths[i].LastIndexOf('/');
                 int lastBackSlashIndex = itemTypePaths[i].LastIndexOf('\\');
                 if (lastBackSlashIndex > lastSlashIndex)
                     lastSlashIndex = lastBackSlashIndex;
                 itemTypePaths[i] = itemTypePaths[i].Substring(lastSlashIndex + 1);
-                
+
                 if (itemTypePaths[i] == path)
                     return i;
             }

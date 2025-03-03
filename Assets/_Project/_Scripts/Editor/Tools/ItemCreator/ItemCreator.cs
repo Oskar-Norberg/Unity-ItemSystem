@@ -85,7 +85,16 @@ namespace Project.ItemSystem.Editor.Tools
             
             string path = Path.Combine(Application.dataPath, itemPath);
         
+            string[] typeDirs = Directory.GetDirectories(path, "*", SearchOption.TopDirectoryOnly);
             string[] dirs = Directory.GetDirectories(path, "*", SearchOption.AllDirectories);
+            
+            // Remove the type directories from the list
+            List<string> dirsList = new(dirs);
+            foreach (string typeDir in typeDirs)
+            {
+                dirsList.Remove(typeDir);
+            }
+            dirs = dirsList.ToArray();
 
             // Convert from full-system paths to unity database Asset relative paths
             for (int i = 0; i < dirs.Length; i++)

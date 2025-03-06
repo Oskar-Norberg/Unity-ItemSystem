@@ -50,6 +50,9 @@ namespace Project.PlayerCharacter
         }
 
         // TODO: Isn't this really expensive to run every frame?
+        // Has a negligible performance impact
+        // Could be optimized by making it a coroutine or a timer that runs every x amounts of seconds
+        // However it's fine for now
         private void FindInteractables()
         {
             _closestInteractable = null;

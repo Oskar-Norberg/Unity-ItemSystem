@@ -40,5 +40,11 @@ namespace Project.PlayerCharacter
             PlayerMovement = GetComponent<PlayerMovement>();
             PlayerInteraction = GetComponent<PlayerInteraction>();
         }
+        
+        [RuntimeInitializeOnLoadMethod]
+        private void InitializeOnLoad()
+        {
+            _instance = null;
+        }
     }
 }

@@ -53,5 +53,11 @@ namespace Project.PlayerCharacter
 
             OnInventoryEvent?.Invoke(this);
         }
+
+        [RuntimeInitializeOnLoadMethod]
+        private void InitializeOnLoad()
+        {
+            _instance = null;
+        }
     }
 }

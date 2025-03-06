@@ -77,26 +77,8 @@ namespace Project.PlayerCharacter
 
         #region Finding Interactables
 
-        private void VerifyCachedInteractables()
-        {
-            List<GameObject> keysToRemove = new List<GameObject>();
-            
-            foreach (var cachedInteractable in _cachedInteractables)
-            {
-                if (cachedInteractable.Key == null)
-                    keysToRemove.Add(cachedInteractable.Key);
-            }
-
-            foreach (var key in keysToRemove)
-            {
-                _cachedInteractables.Remove(key);
-            }
-        }
-
         private List<Interactable> GetInteractablesInRange()
         {
-            VerifyCachedInteractables();
-            
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, interactionRange);
             List<Interactable> interactablesInRange = new List<Interactable>();
             

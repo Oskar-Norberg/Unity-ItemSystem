@@ -82,12 +82,12 @@ namespace Project.PlayerCharacter
 
         private List<Interactable> GetInteractablesInRange()
         {
-            Collider[] hitColliders = Physics.OverlapSphere(transform.position, interactionRange);
+            Tuple<int, Collider[]> collidersInRange = GetCollidersInRange();
             List<Interactable> interactablesInRange = new List<Interactable>();
-            
-            foreach (var hitCollider in hitColliders)
+
+            for (int i = 0; i < collidersInRange.Item1; i++)
             {
-                var colliderGameObject = hitCollider.gameObject;
+                var colliderGameObject = collidersInRange.Item2[i].gameObject;
                 
                 if (_cachedInteractables.TryGetValue(colliderGameObject, out var cachedInteractable))
                 {
@@ -153,6 +153,30 @@ namespace Project.PlayerCharacter
         
         #endregion
 
+        /**
+         * <returns>Tuple with first element as size, second as array of colliders</returns>
+         */
+        private Tuple<int, Collider[]> GetCollidersInRange()
+        {
+            Collider[] hitCollider = new Collider[64];
+            int hitCount;
+            
+            while (true)
+            {
+                hitCount = Physics.OverlapSphereNonAlloc(transform.position, interactionRange, hitCollider);
+
+                if (hitCount >= hitCollider.Length)
+                {
+                    hitCollider = new Collider[hitCollider.Length * 2];
+                    continue;
+                }
+
+                break;
+            }
+
+            return Tuple.Create(hitCount, hitCollider);
+        }
+        
         #region Debug Draw
         private void OnDrawGizmos()
         {

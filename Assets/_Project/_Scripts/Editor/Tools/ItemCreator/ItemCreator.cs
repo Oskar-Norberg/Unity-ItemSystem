@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Codice.Client.BaseCommands.Merge.Xml;
 using Project.InteractableSystem;
 using UnityEditor;
 using UnityEngine;
@@ -21,10 +20,8 @@ namespace Project.ItemSystem.Editor.Tools
         private int _maxStackSize = 1;
 
         private int _scriptTypeSelectionIndex;
-        private int _typeSelectionIndex;
+        private int _folderSelectionIndex;
         
-        private Type _itemType;
-
         [MenuItem("Tools/Iteam Creator")]
         public static void ShowWindow()
         {
@@ -70,7 +67,7 @@ namespace Project.ItemSystem.Editor.Tools
             }
 
             ItemScriptType();
-            ItemType();
+            FolderSelection();
         }
 
         private void ItemScriptType()
@@ -91,7 +88,7 @@ namespace Project.ItemSystem.Editor.Tools
             GUILayout.EndHorizontal();
         }
 
-        private void ItemType()
+        private void FolderSelection()
         {
             string[] itemTypePaths = AssetDatabase.GetSubFolders(ItemPath);
             
@@ -110,9 +107,9 @@ namespace Project.ItemSystem.Editor.Tools
             }
             
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Item Type", EditorStyles.label);
+            GUILayout.Label("Item Folder", EditorStyles.label);
         
-            _typeSelectionIndex = EditorGUILayout.Popup(_typeSelectionIndex, pathsToDisplay);
+            _folderSelectionIndex = EditorGUILayout.Popup(_folderSelectionIndex, pathsToDisplay);
             
             GUILayout.EndHorizontal();
         }
@@ -154,8 +151,8 @@ namespace Project.ItemSystem.Editor.Tools
         // TODO: Clean up on failure
         private string CreateItemCommon(ItemData itemData)
         {
-            AssetDatabase.CreateFolder(GetTypeSubFolder(_typeSelectionIndex), _itemName.Trim(' ').Trim());
-            string newSubFolder = GetTypeSubFolder(_typeSelectionIndex) + "/" + _itemName.Trim(' ').Trim() + "/";
+            AssetDatabase.CreateFolder(GetTypeSubFolder(_folderSelectionIndex), _itemName.Trim(' ').Trim());
+            string newSubFolder = GetTypeSubFolder(_folderSelectionIndex) + "/" + _itemName.Trim(' ').Trim() + "/";
             
             // Save Item Data
             AssetDatabase.CreateAsset(itemData, newSubFolder + _itemName + ".asset");

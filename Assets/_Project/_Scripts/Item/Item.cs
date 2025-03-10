@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Project.InteractableSystem
 {
-    public class Item : Interactable
+    public abstract class Item : Interactable
     {
         public ItemData ItemData => itemData;
         [SerializeField] private ItemData itemData;
@@ -33,5 +33,7 @@ namespace Project.InteractableSystem
 
             playerItemHolder.Equip(this);
         }
+
+        public abstract void Use(Transform user);
     }
 }

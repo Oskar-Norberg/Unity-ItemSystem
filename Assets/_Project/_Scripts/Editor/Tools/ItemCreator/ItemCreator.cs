@@ -72,7 +72,7 @@ namespace Project.ItemSystem.Editor.Tools
 
         private void ItemScriptType()
         {
-            TypeCache.TypeCollection types = GetItemTypes();
+            var types = GetValidItemTypes();
             
             List<string> typeNames = new List<string>();
             foreach (Type type in types)
@@ -159,7 +159,7 @@ namespace Project.ItemSystem.Editor.Tools
             
             var itemGameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
             
-            TypeCache.TypeCollection types = GetItemTypes();
+            var types = GetValidItemTypes();
             Type itemScriptType = types[_scriptTypeSelectionIndex];
             
             Item itemComponent = itemGameObject.AddComponent(itemScriptType) as Item;
@@ -194,9 +194,21 @@ namespace Project.ItemSystem.Editor.Tools
             return itemTypePaths[index];
         }
 
-        private TypeCache.TypeCollection GetItemTypes()
+        private List<Type> GetValidItemTypes()
         {
-            return TypeCache.GetTypesDerivedFrom<Item>();
+            TypeCache.TypeCollection types = TypeCache.GetTypesDerivedFrom<Item>();
+            
+            List<Type> validTypes = new List<Type>();
+
+            foreach (var type in types)
+            {
+                if (type.IsAbstract || type.IsInterface)
+                    continue;
+                
+                validTypes.Add(type);
+            }
+
+            return validTypes;
         }
     }
 }

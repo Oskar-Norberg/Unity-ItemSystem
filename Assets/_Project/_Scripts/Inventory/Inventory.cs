@@ -43,8 +43,13 @@ namespace Project.InventorySystem
 
         public void Equip(InventorySlot inventorySlot)
         {
+            if (inventorySlot.ItemData == null)
+                return;
+            
             var item = Instantiate(inventorySlot.ItemData.prefab, transform.position, Quaternion.identity);
             item.GetComponent<Item>().Equip(transform);
+            
+            DecreaseStackSize(inventorySlot);
         }
 
         public bool DragItem(InventorySlot from, InventorySlot to)

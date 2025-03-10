@@ -1,7 +1,11 @@
+using System;
+using System.Collections.Generic;
 using System.Reflection;
+using Codice.Client.BaseCommands.Merge.Xml;
 using Project.InteractableSystem;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Project.ItemSystem.Editor.Tools
 {
@@ -16,7 +20,10 @@ namespace Project.ItemSystem.Editor.Tools
         private bool _isStackable;
         private int _maxStackSize = 1;
 
+        private int _scriptTypeSelectionIndex;
         private int _typeSelectionIndex;
+        
+        private Type _itemType;
 
         [MenuItem("Tools/Iteam Creator")]
         public static void ShowWindow()
@@ -61,8 +68,27 @@ namespace Project.ItemSystem.Editor.Tools
                     _maxStackSize = 1;
                 GUILayout.EndHorizontal();
             }
-            
+
+            ItemScriptType();
             ItemType();
+        }
+
+        private void ItemScriptType()
+        {
+            TypeCache.TypeCollection types = GetItemTypes();
+            
+            List<string> typeNames = new List<string>();
+            foreach (Type type in types)
+            {
+                typeNames.Add(type.Name);
+            }
+            
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Item Script Type", EditorStyles.label);
+        
+            _scriptTypeSelectionIndex = EditorGUILayout.Popup(_scriptTypeSelectionIndex, typeNames.ToArray());
+            
+            GUILayout.EndHorizontal();
         }
 
         private void ItemType()
@@ -135,7 +161,11 @@ namespace Project.ItemSystem.Editor.Tools
             AssetDatabase.CreateAsset(itemData, newSubFolder + _itemName + ".asset");
             
             var itemGameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            var itemComponent = itemGameObject.AddComponent<Item>();
+            
+            TypeCache.TypeCollection types = GetItemTypes();
+            Type itemScriptType = types[_scriptTypeSelectionIndex];
+            
+            Item itemComponent = itemGameObject.AddComponent(itemScriptType) as Item;
             
             var itemDataField = typeof(Item).GetField("itemData", BindingFlags.NonPublic | BindingFlags.Instance);
             if (itemDataField == null)
@@ -165,6 +195,11 @@ namespace Project.ItemSystem.Editor.Tools
         {
             string[] itemTypePaths = AssetDatabase.GetSubFolders(ItemPath);
             return itemTypePaths[index];
+        }
+
+        private TypeCache.TypeCollection GetItemTypes()
+        {
+            return TypeCache.GetTypesDerivedFrom<Item>();
         }
     }
 }

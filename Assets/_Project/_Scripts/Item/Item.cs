@@ -1,4 +1,5 @@
 using Project.ItemSystem;
+using Project.PlayerCharacter.Item;
 using UnityEngine;
 
 namespace Project.InteractableSystem
@@ -19,6 +20,18 @@ namespace Project.InteractableSystem
                 return;
             
             Destroy(gameObject);
+        }
+
+        // TODO: Add grab point to item
+        public virtual void Equip(Transform equipper)
+        {
+            if (!equipper.TryGetComponent<PlayerItemHolder>(out var playerItemHolder))
+            {
+                Debug.LogWarning("Could not equip item, equipper does not have a PlayerItemHolder component");
+                return;
+            }
+
+            playerItemHolder.Equip(this);
         }
     }
 }

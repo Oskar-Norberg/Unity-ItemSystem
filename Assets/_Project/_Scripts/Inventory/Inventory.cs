@@ -1,3 +1,4 @@
+using Project.InteractableSystem;
 using Project.ItemSystem;
 using UnityEngine;
 
@@ -37,10 +38,13 @@ namespace Project.InventorySystem
         {
             Instantiate(inventorySlot.ItemData.prefab, transform.position, Quaternion.identity);
 
-            inventorySlot.IncrementStackSize(-1);
+            DecreaseStackSize(inventorySlot);
+        }
 
-            if (inventorySlot.Amount == 0)
-                inventorySlot.SetItem(null, 0);
+        public void Equip(InventorySlot inventorySlot)
+        {
+            var item = Instantiate(inventorySlot.ItemData.prefab, transform.position, Quaternion.identity);
+            item.GetComponent<Item>().Equip(transform);
         }
 
         public bool DragItem(InventorySlot from, InventorySlot to)
@@ -72,6 +76,14 @@ namespace Project.InventorySystem
         private bool AddNonStackableItem(ItemData itemData)
         {
             return TryAddItem(itemData);
+        }
+        
+        private void DecreaseStackSize(InventorySlot inventorySlot)
+        {
+            inventorySlot.IncrementStackSize(-1);
+
+            if (inventorySlot.Amount == 0)
+                inventorySlot.SetItem(null, 0);
         }
 
         private void InitializeInventorySlots()

@@ -10,8 +10,13 @@ namespace Project.PlayerCharacter.Item
         
         public void Equip(InteractableSystem.Item item)
         {
-            item.transform.SetParent(transform);
+            if (_currentItem)
+                Destroy(_currentItem.gameObject);
             
+            item.transform.SetParent(itemHolder);
+            item.transform.localPosition = Vector3.zero;
+            
+            _currentItem = item;
         }
     }
 }

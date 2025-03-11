@@ -63,12 +63,12 @@ namespace Project.InteractableSystem
 
         private List<Interactable> GetInteractablesInRange()
         {
-            Tuple<int, Collider[]> collidersInRange = GetCollidersInRange();
+            Tuple<Collider[], int> collidersInRange = GetCollidersInRange();
             List<Interactable> interactablesInRange = new List<Interactable>();
 
-            for (int i = 0; i < collidersInRange.Item1; i++)
+            for (int i = 0; i < collidersInRange.Item2; i++)
             {
-                var colliderGameObject = collidersInRange.Item2[i].gameObject;
+                var colliderGameObject = collidersInRange.Item1[i].gameObject;
                 
                 if (_cachedInteractables.TryGetValue(colliderGameObject, out var cachedInteractable))
                 {
@@ -137,7 +137,7 @@ namespace Project.InteractableSystem
         /**
          * <returns>Tuple with first element as size, second as array of colliders</returns>
          */
-        private Tuple<int, Collider[]> GetCollidersInRange()
+        private Tuple<Collider[], int> GetCollidersInRange()
         {
             int hitCount;
             
@@ -154,7 +154,7 @@ namespace Project.InteractableSystem
                 break;
             }
 
-            return Tuple.Create(hitCount, collidersInRange);
+            return Tuple.Create(collidersInRange, hitCount);
         }
         
         #region Debug Draw

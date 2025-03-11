@@ -55,10 +55,10 @@ namespace Project.InventorySystem.UI
             UpdateItem(inventorySlot);
         }
 
-        public void Equip()
-        {
-            _inventorySlot.Equip();
-        }
+        // public void Equip()
+        // {
+        //     _inventorySlot.Equip();
+        // }
 
         public void Drop()
         {

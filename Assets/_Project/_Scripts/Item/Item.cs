@@ -25,9 +25,9 @@ namespace Project.InteractableSystem
         // TODO: Add grab point to item
         public virtual void Equip(Transform equipper)
         {
-            if (!equipper.TryGetComponent<PlayerItemHolder>(out var playerItemHolder))
+            if (!equipper.TryGetComponent<ItemHolder>(out var playerItemHolder))
             {
-                Debug.LogWarning("Could not equip item, equipper does not have a PlayerItemHolder component");
+                Debug.LogWarning("Could not equip item, equipper does not have a ItemHolder component");
                 return;
             }
 

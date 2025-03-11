@@ -6,8 +6,10 @@ namespace Project.PlayerCharacter.Item
     {
         private void OnSubmit()
         {
-            if (CurrentItem)
-                CurrentItem.Use(transform);
+            if (!CurrentItem)
+                return;
+            
+            CurrentItem.Use(transform);
         }
 
         private void OnRightClick()

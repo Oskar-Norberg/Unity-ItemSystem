@@ -5,6 +5,9 @@ namespace Project.ItemSystem
 {
     public class Item : Interactable
     {
+        public delegate void OnItemUsedEventHandler(Transform user);
+        public event OnItemUsedEventHandler OnItemUsed;
+        
         public ItemData ItemData => itemData;
         [SerializeField] private ItemData itemData;
         
@@ -19,6 +22,11 @@ namespace Project.ItemSystem
                 return;
             
             Destroy(gameObject);
+        }
+
+        public void Use(Transform user)
+        {
+            OnItemUsed?.Invoke(user);
         }
     }
 }

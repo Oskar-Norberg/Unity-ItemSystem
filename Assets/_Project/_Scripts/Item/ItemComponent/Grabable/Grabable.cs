@@ -14,7 +14,7 @@ namespace Project.ItemSystem.Components
 
         public void Use(Transform user)
         {
-            Hold(user);
+            Item.Use(user);
         }
 
         public void Hold(Transform equipper)

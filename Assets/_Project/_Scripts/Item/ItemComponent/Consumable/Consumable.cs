@@ -10,6 +10,13 @@ namespace Project.ItemSystem.Components
         private void Start()
         {
             Item = GetComponent<Item>();
+            
+            Item.OnItemUsed += Use;
+        }
+        
+        private void OnDestroy()
+        {
+            Item.OnItemUsed -= Use;
         }
 
         public void Use(Transform user)

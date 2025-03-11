@@ -166,6 +166,12 @@ namespace Project.InteractableSystem
             Gizmos.matrix = Matrix4x4.TRS(interactOrigin.position, interactOrigin.rotation, Vector3.one);
             Gizmos.DrawFrustum(Vector3.zero, interactionAngle * 2, interactionRange, 0.1f, 1.0f);
             Gizmos.matrix = temp;
+
+            if (_closestInteractable)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawLine(interactOrigin.position, _closestInteractable.transform.position);
+            }
         }
         #endregion
     }

@@ -16,6 +16,7 @@ namespace Project.InteractableSystem
             
             item.transform.SetParent(itemHolder);
             item.transform.localPosition = Vector3.zero;
+            item.transform.localRotation = Quaternion.identity;
             
             CurrentItem = item;
         }

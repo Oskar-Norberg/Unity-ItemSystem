@@ -118,16 +118,16 @@ namespace Project.InteractableSystem
                 Vector3 directionToInteractable = interactable.transform.position - interactOrigin.position;
                 float angleToInteractable = Vector3.Angle(interactOrigin.forward, directionToInteractable);
                 
+                if (angleToInteractable > interactionAngle)
+                    continue;
+                
                 interactablesByAngle.Add(new Tuple<Interactable, float>(interactable, angleToInteractable));
             }
-            
-            interactablesByAngle.Sort((a, b) => a.Item2.CompareTo(b.Item2));
             
             if (interactablesByAngle.Count == 0)
                 return null;
             
-            if (interactablesByAngle[0].Item2 > interactionAngle)
-                return null;
+            interactablesByAngle.Sort((a, b) => a.Item2.CompareTo(b.Item2));
             
             return interactablesByAngle[0].Item1;
         }

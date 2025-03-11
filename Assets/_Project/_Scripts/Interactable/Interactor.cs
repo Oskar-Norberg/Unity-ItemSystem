@@ -20,8 +20,8 @@ namespace Project.InteractableSystem
         [SerializeField] private float interactionAngle = 17.5f;
         [SerializeField] private float interactionRange = 10.0f;
 
-        private Dictionary<GameObject, Interactable> _cachedInteractables = new();
-        Collider[] collidersInRange;
+        private readonly Dictionary<GameObject, Interactable> _cachedInteractables = new();
+        private Collider[] _collidersInRange;
         
         private Interactable _closestInteractable;
 
@@ -30,7 +30,7 @@ namespace Project.InteractableSystem
 
         private void Awake()
         {
-            collidersInRange = new Collider[InitialMaxCollidersSize];
+            _collidersInRange = new Collider[InitialMaxCollidersSize];
             _canInteract = true;
         }
         
@@ -143,18 +143,18 @@ namespace Project.InteractableSystem
             
             while (true)
             {
-                hitCount = Physics.OverlapSphereNonAlloc(transform.position, interactionRange, collidersInRange);
+                hitCount = Physics.OverlapSphereNonAlloc(transform.position, interactionRange, _collidersInRange);
 
-                if (hitCount >= collidersInRange.Length)
+                if (hitCount >= _collidersInRange.Length)
                 {
-                    collidersInRange = new Collider[collidersInRange.Length * 2];
+                    _collidersInRange = new Collider[_collidersInRange.Length * 2];
                     continue;
                 }
 
                 break;
             }
 
-            return Tuple.Create(collidersInRange, hitCount);
+            return Tuple.Create(_collidersInRange, hitCount);
         }
         
         #region Debug Draw

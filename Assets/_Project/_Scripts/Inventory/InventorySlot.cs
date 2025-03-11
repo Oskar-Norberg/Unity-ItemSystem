@@ -34,7 +34,7 @@ namespace Project.InventorySystem
             OnItemSet?.Invoke(this);
         }
 
-        public void Equip()
+        public void Grab()
         {
             if (ItemData)
                 _inventory.Equip(this);

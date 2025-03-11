@@ -1,4 +1,5 @@
 ﻿using Project.InventorySystem;
+using Project.ItemSystem.Components;
 using UnityEngine;
 
 namespace Project.InteractableSystem
@@ -8,11 +9,11 @@ namespace Project.InteractableSystem
         [SerializeField] private Inventory inventory;
         [SerializeField] private Transform itemHolder;
         
-        protected Item CurrentItem;
+        protected Holdable CurrentItem;
         
-        public void Equip(Item item)
+        public void Grab(Holdable item)
         {
-            Dequip();
+            Drop();
             
             item.transform.SetParent(itemHolder);
             item.transform.localPosition = Vector3.zero;
@@ -21,20 +22,14 @@ namespace Project.InteractableSystem
             CurrentItem = item;
         }
 
-        protected void Dequip()
+        protected void Drop()
         {
             if (!CurrentItem)
                 return;
             
-            inventory.AddItem(CurrentItem.ItemData);
+            inventory.AddItem(CurrentItem.Item.ItemData);
 
             DestroyItem();
-        }
-
-        private void OnSubmit()
-        {
-            if (CurrentItem)
-                CurrentItem.Use(transform);
         }
 
         protected void DestroyItem()

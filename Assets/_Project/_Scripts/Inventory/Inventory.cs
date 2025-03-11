@@ -1,5 +1,5 @@
-using Project.InteractableSystem;
 using Project.ItemSystem;
+using Project.ItemSystem.Components;
 using UnityEngine;
 
 namespace Project.InventorySystem
@@ -47,7 +47,11 @@ namespace Project.InventorySystem
                 return;
             
             var item = Instantiate(inventorySlot.ItemData.prefab, transform.position, Quaternion.identity);
-            item.GetComponent<Item>().Equip(transform);
+            
+            if (item.TryGetComponent<Holdable>(out var equipable))
+            {
+                equipable.Hold(transform);
+            }
             
             DecreaseStackSize(inventorySlot);
         }

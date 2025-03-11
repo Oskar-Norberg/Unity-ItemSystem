@@ -55,9 +55,9 @@ namespace Project.InventorySystem.UI
             UpdateItem(inventorySlot);
         }
 
-        public void Equip()
+        public void Grab()
         {
-            _inventorySlot.Equip();
+            _inventorySlot.Grab();
         }
 
         public void Drop()

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Project.InteractableSystem;
+using Project.ItemSystem.Components;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -19,8 +20,14 @@ namespace Project.ItemSystem.Editor.Tools
         private bool _isStackable;
         private int _maxStackSize = 1;
 
-        private int _scriptTypeSelectionIndex;
+        private bool[] _itemComponentList;
         private int _folderSelectionIndex;
+
+        public ItemCreator()
+        {
+            List<Type> types = GetValidItemComponents();
+            _itemComponentList = new bool[types.Count];
+        }
         
         [MenuItem("Tools/Iteam Creator")]
         public static void ShowWindow()
@@ -72,20 +79,22 @@ namespace Project.ItemSystem.Editor.Tools
 
         private void ItemScriptType()
         {
-            var types = GetValidItemTypes();
+            var types = GetValidItemComponents();
             
-            List<string> typeNames = new List<string>();
-            foreach (Type type in types)
+            if (types.Count > _itemComponentList.Length)
+                _itemComponentList = new bool[types.Count];
+            
+            GUILayout.BeginVertical();
+            GUILayout.Label("Select Components", EditorStyles.label);
+            
+            for (int i = 0; i < types.Count; i++)
             {
-                typeNames.Add(type.Name);
+                GUILayout.BeginHorizontal();
+                _itemComponentList[i] = GUILayout.Toggle(_itemComponentList[i], types[i].Name);
+                GUILayout.EndHorizontal();
             }
             
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Item Script Type", EditorStyles.label);
-        
-            _scriptTypeSelectionIndex = EditorGUILayout.Popup(_scriptTypeSelectionIndex, typeNames.ToArray());
-            
-            GUILayout.EndHorizontal();
+            GUILayout.EndVertical();
         }
 
         private void FolderSelection()
@@ -159,16 +168,20 @@ namespace Project.ItemSystem.Editor.Tools
             
             var itemGameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
             
-            var types = GetValidItemTypes();
-            Type itemScriptType = types[_scriptTypeSelectionIndex];
-            
-            Item itemComponent = itemGameObject.AddComponent(itemScriptType) as Item;
+            Item itemComponent = itemGameObject.AddComponent<Item>();
             
             var itemDataField = typeof(Item).GetField("itemData", BindingFlags.NonPublic | BindingFlags.Instance);
             if (itemDataField == null)
             {
                 Debug.LogError("Could not find itemData field in Item.cs");
                 return string.Empty;
+            }
+
+            List<Type> validTypes = GetValidItemComponents();
+            for (int i = 0; i < validTypes.Count; i++)
+            {
+                if (_itemComponentList[i])
+                    itemGameObject.AddComponent(validTypes[i]);
             }
 
             itemDataField.SetValue(itemComponent, itemData);
@@ -194,9 +207,9 @@ namespace Project.ItemSystem.Editor.Tools
             return itemTypePaths[index];
         }
 
-        private List<Type> GetValidItemTypes()
+        private List<Type> GetValidItemComponents()
         {
-            TypeCache.TypeCollection types = TypeCache.GetTypesDerivedFrom<Item>();
+            TypeCache.TypeCollection types = TypeCache.GetTypesDerivedFrom<ItemComponent>();
             
             List<Type> validTypes = new List<Type>();
 

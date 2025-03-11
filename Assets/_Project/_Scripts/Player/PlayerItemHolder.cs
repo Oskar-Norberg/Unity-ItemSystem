@@ -6,13 +6,15 @@ namespace Project.PlayerCharacter.Item
     {
         private void OnSubmit()
         {
-            if (CurrentItem)
-                CurrentItem.Use(transform);
+            if (!CurrentItem)
+                return;
+            
+            CurrentItem.Item.Use(transform);
         }
 
         private void OnRightClick()
         {
-            Dequip();
+            Drop();
         }
     }
 }

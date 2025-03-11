@@ -1,11 +1,13 @@
-using Project.ItemSystem;
-using Project.PlayerCharacter.Item;
+using Project.InteractableSystem;
 using UnityEngine;
 
-namespace Project.InteractableSystem
+namespace Project.ItemSystem
 {
-    public abstract class Item : Interactable
+    public class Item : Interactable
     {
+        public delegate void OnItemUsedEventHandler(Transform user);
+        public event OnItemUsedEventHandler OnItemUsed;
+        
         public ItemData ItemData => itemData;
         [SerializeField] private ItemData itemData;
         
@@ -22,18 +24,9 @@ namespace Project.InteractableSystem
             Destroy(gameObject);
         }
 
-        // TODO: Add grab point to item
-        public virtual void Equip(Transform equipper)
+        public void Use(Transform user)
         {
-            if (!equipper.TryGetComponent<ItemHolder>(out var playerItemHolder))
-            {
-                Debug.LogWarning("Could not equip item, equipper does not have a ItemHolder component");
-                return;
-            }
-
-            playerItemHolder.Equip(this);
+            OnItemUsed?.Invoke(user);
         }
-
-        public abstract void Use(Transform user);
     }
 }

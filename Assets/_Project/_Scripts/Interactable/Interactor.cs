@@ -6,6 +6,8 @@ namespace Project.InteractableSystem
 {
     public class Interactor : MonoBehaviour
     {
+        private const int InitialMaxCollidersSize = 64;
+        
         public Interactable CurrentlyClosestInteractable => _closestInteractable;
         public bool IsInteracting => _currentlyInteractingInteractable != null;
         
@@ -19,6 +21,7 @@ namespace Project.InteractableSystem
         [SerializeField] private float interactionRange = 10.0f;
 
         private Dictionary<GameObject, Interactable> _cachedInteractables = new();
+        Collider[] collidersInRange;
         
         private Interactable _closestInteractable;
 
@@ -27,6 +30,7 @@ namespace Project.InteractableSystem
 
         private void Awake()
         {
+            collidersInRange = new Collider[InitialMaxCollidersSize];
             _canInteract = true;
         }
         
@@ -135,24 +139,22 @@ namespace Project.InteractableSystem
          */
         private Tuple<int, Collider[]> GetCollidersInRange()
         {
-            //TODO: This is being allocated every frame, could be optimized
-            Collider[] hitCollider = new Collider[64];
             int hitCount;
             
             while (true)
             {
-                hitCount = Physics.OverlapSphereNonAlloc(transform.position, interactionRange, hitCollider);
+                hitCount = Physics.OverlapSphereNonAlloc(transform.position, interactionRange, collidersInRange);
 
-                if (hitCount >= hitCollider.Length)
+                if (hitCount >= collidersInRange.Length)
                 {
-                    hitCollider = new Collider[hitCollider.Length * 2];
+                    collidersInRange = new Collider[collidersInRange.Length * 2];
                     continue;
                 }
 
                 break;
             }
 
-            return Tuple.Create(hitCount, hitCollider);
+            return Tuple.Create(hitCount, collidersInRange);
         }
         
         #region Debug Draw

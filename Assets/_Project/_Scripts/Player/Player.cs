@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Project.PlayerCharacter
 {
     [RequireComponent(typeof(PlayerMovement))]
-    [RequireComponent(typeof(PlayerInteraction))]
+    [RequireComponent(typeof(PlayerInteractor))]
     [RequireComponent(typeof(PlayerItemHolder))]
     public class Player : MonoBehaviour
     {
@@ -25,7 +25,7 @@ namespace Project.PlayerCharacter
         private static Player _instance;
         
         public PlayerMovement PlayerMovement { get; private set; }
-        public PlayerInteraction PlayerInteraction { get; private set; }
+        public PlayerInteractor PlayerInteraction { get; private set; }
         public PlayerItemHolder PlayerItemHolder { get; private set; }
     
         private void Awake()
@@ -41,7 +41,7 @@ namespace Project.PlayerCharacter
             }
             
             PlayerMovement = GetComponent<PlayerMovement>();
-            PlayerInteraction = GetComponent<PlayerInteraction>();
+            PlayerInteraction = GetComponent<PlayerInteractor>();
             PlayerItemHolder = GetComponent<PlayerItemHolder>();
         }
         

@@ -3,8 +3,7 @@ using UnityEngine;
 
 namespace Project.ItemSystem.Components
 {
-    // TODO: Rename to Holdable
-    public class Grabable : ItemComponent
+    public class Holdable : ItemComponent
     {
         public void Hold(Transform equipper)
         {

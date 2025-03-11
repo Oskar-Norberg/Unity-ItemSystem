@@ -9,9 +9,9 @@ namespace Project.InteractableSystem
         [SerializeField] private Inventory inventory;
         [SerializeField] private Transform itemHolder;
         
-        protected Grabable CurrentItem;
+        protected Holdable CurrentItem;
         
-        public void Grab(Grabable item)
+        public void Grab(Holdable item)
         {
             Drop();
             

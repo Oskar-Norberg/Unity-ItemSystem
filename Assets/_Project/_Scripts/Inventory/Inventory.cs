@@ -49,7 +49,7 @@ namespace Project.InventorySystem
             
             var item = Instantiate(inventorySlot.ItemData.prefab, transform.position, Quaternion.identity);
             
-            if (item.TryGetComponent<Grabable>(out var equipable))
+            if (item.TryGetComponent<Holdable>(out var equipable))
             {
                 equipable.Hold(transform);
             }

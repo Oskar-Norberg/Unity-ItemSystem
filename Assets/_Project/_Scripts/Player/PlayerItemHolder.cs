@@ -9,5 +9,10 @@ namespace Project.PlayerCharacter.Item
             if (CurrentItem)
                 CurrentItem.Use(transform);
         }
+
+        private void OnRightClick()
+        {
+            Dequip();
+        }
     }
 }

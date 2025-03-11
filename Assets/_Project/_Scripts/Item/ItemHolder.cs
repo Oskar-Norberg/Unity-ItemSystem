@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+﻿using Project.InventorySystem;
+using UnityEngine;
 
 namespace Project.InteractableSystem
 {
     public abstract class ItemHolder : MonoBehaviour
     {
+        [SerializeField] private Inventory inventory;
         [SerializeField] private Transform itemHolder;
         
         protected Item CurrentItem;
@@ -16,6 +18,16 @@ namespace Project.InteractableSystem
             item.transform.localPosition = Vector3.zero;
             
             CurrentItem = item;
+        }
+
+        protected void Dequip()
+        {
+            if (!CurrentItem)
+                return;
+            
+            inventory.AddItem(CurrentItem.ItemData);
+
+            DestroyItem();
         }
 
         private void OnSubmit()

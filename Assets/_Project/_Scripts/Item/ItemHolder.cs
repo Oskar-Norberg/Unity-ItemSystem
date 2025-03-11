@@ -1,4 +1,5 @@
 ﻿using Project.InventorySystem;
+using Project.ItemSystem;
 using UnityEngine;
 
 namespace Project.InteractableSystem

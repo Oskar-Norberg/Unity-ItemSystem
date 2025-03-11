@@ -1,8 +1,7 @@
-using Project.ItemSystem;
-using Project.PlayerCharacter.Item;
+using Project.InteractableSystem;
 using UnityEngine;
 
-namespace Project.InteractableSystem
+namespace Project.ItemSystem
 {
     public abstract class Item : Interactable
     {

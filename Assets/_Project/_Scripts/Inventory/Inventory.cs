@@ -1,4 +1,3 @@
-using Project.InteractableSystem;
 using Project.ItemSystem;
 using Project.ItemSystem.Components;
 using UnityEngine;

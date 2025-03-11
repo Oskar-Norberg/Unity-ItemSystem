@@ -1,9 +1,11 @@
+using Project.PlayerCharacter.Item;
 using UnityEngine;
 
 namespace Project.PlayerCharacter
 {
     [RequireComponent(typeof(PlayerMovement))]
     [RequireComponent(typeof(PlayerInteraction))]
+    [RequireComponent(typeof(PlayerItemHolder))]
     public class Player : MonoBehaviour
     {
         public static Player Instance
@@ -24,6 +26,7 @@ namespace Project.PlayerCharacter
         
         public PlayerMovement PlayerMovement { get; private set; }
         public PlayerInteraction PlayerInteraction { get; private set; }
+        public PlayerItemHolder PlayerItemHolder { get; private set; }
     
         private void Awake()
         {
@@ -39,6 +42,7 @@ namespace Project.PlayerCharacter
             
             PlayerMovement = GetComponent<PlayerMovement>();
             PlayerInteraction = GetComponent<PlayerInteraction>();
+            PlayerItemHolder = GetComponent<PlayerItemHolder>();
         }
         
         [RuntimeInitializeOnLoadMethod]

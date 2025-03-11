@@ -96,7 +96,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 966395321326200248}
-  - component: {fileID: 2732265585260808483}
+  - component: {fileID: 1420250694082319824}
   - component: {fileID: 4925446870988169614}
   m_Layer: 0
   m_Name: Car2
@@ -121,7 +121,7 @@ Transform:
   - {fileID: 2981783878052187399}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2732265585260808483
+--- !u!114 &1420250694082319824
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -130,7 +130,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1838005235902216327}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1905be614ff4e894f86facfa19463751, type: 3}
+  m_Script: {fileID: 11500000, guid: c3704bb65e0d88640a872605521fd245, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   itemData: {fileID: 11400000, guid: af0797386a9a80448b2033c2dd18577e, type: 2}

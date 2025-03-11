@@ -1,7 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Project.InteractableSystem;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Project.ItemSystem.Editor.Tools
 {
@@ -16,8 +19,9 @@ namespace Project.ItemSystem.Editor.Tools
         private bool _isStackable;
         private int _maxStackSize = 1;
 
-        private int _typeSelectionIndex;
-
+        private int _scriptTypeSelectionIndex;
+        private int _folderSelectionIndex;
+        
         [MenuItem("Tools/Iteam Creator")]
         public static void ShowWindow()
         {
@@ -61,11 +65,30 @@ namespace Project.ItemSystem.Editor.Tools
                     _maxStackSize = 1;
                 GUILayout.EndHorizontal();
             }
-            
-            ItemType();
+
+            ItemScriptType();
+            FolderSelection();
         }
 
-        private void ItemType()
+        private void ItemScriptType()
+        {
+            var types = GetValidItemTypes();
+            
+            List<string> typeNames = new List<string>();
+            foreach (Type type in types)
+            {
+                typeNames.Add(type.Name);
+            }
+            
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Item Script Type", EditorStyles.label);
+        
+            _scriptTypeSelectionIndex = EditorGUILayout.Popup(_scriptTypeSelectionIndex, typeNames.ToArray());
+            
+            GUILayout.EndHorizontal();
+        }
+
+        private void FolderSelection()
         {
             string[] itemTypePaths = AssetDatabase.GetSubFolders(ItemPath);
             
@@ -84,9 +107,9 @@ namespace Project.ItemSystem.Editor.Tools
             }
             
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Item Type", EditorStyles.label);
+            GUILayout.Label("Item Folder", EditorStyles.label);
         
-            _typeSelectionIndex = EditorGUILayout.Popup(_typeSelectionIndex, pathsToDisplay);
+            _folderSelectionIndex = EditorGUILayout.Popup(_folderSelectionIndex, pathsToDisplay);
             
             GUILayout.EndHorizontal();
         }
@@ -128,14 +151,18 @@ namespace Project.ItemSystem.Editor.Tools
         // TODO: Clean up on failure
         private string CreateItemCommon(ItemData itemData)
         {
-            AssetDatabase.CreateFolder(GetTypeSubFolder(_typeSelectionIndex), _itemName.Trim(' ').Trim());
-            string newSubFolder = GetTypeSubFolder(_typeSelectionIndex) + "/" + _itemName.Trim(' ').Trim() + "/";
+            AssetDatabase.CreateFolder(GetTypeSubFolder(_folderSelectionIndex), _itemName.Trim(' ').Trim());
+            string newSubFolder = GetTypeSubFolder(_folderSelectionIndex) + "/" + _itemName.Trim(' ').Trim() + "/";
             
             // Save Item Data
             AssetDatabase.CreateAsset(itemData, newSubFolder + _itemName + ".asset");
             
             var itemGameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            var itemComponent = itemGameObject.AddComponent<Item>();
+            
+            var types = GetValidItemTypes();
+            Type itemScriptType = types[_scriptTypeSelectionIndex];
+            
+            Item itemComponent = itemGameObject.AddComponent(itemScriptType) as Item;
             
             var itemDataField = typeof(Item).GetField("itemData", BindingFlags.NonPublic | BindingFlags.Instance);
             if (itemDataField == null)
@@ -165,6 +192,23 @@ namespace Project.ItemSystem.Editor.Tools
         {
             string[] itemTypePaths = AssetDatabase.GetSubFolders(ItemPath);
             return itemTypePaths[index];
+        }
+
+        private List<Type> GetValidItemTypes()
+        {
+            TypeCache.TypeCollection types = TypeCache.GetTypesDerivedFrom<Item>();
+            
+            List<Type> validTypes = new List<Type>();
+
+            foreach (var type in types)
+            {
+                if (type.IsAbstract || type.IsInterface)
+                    continue;
+                
+                validTypes.Add(type);
+            }
+
+            return validTypes;
         }
     }
 }

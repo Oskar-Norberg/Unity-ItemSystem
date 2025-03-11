@@ -158,6 +158,7 @@ namespace Project.PlayerCharacter
          */
         private Tuple<int, Collider[]> GetCollidersInRange()
         {
+            //TODO: This is being allocated every frame, could be optimized
             Collider[] hitCollider = new Collider[64];
             int hitCount;
             

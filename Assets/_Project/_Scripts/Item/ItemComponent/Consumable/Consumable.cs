@@ -12,6 +12,7 @@ namespace Project.ItemSystem.Components
         private void Consume(Transform consumer)
         {
             Debug.Log("Consumed item " + Item.name);
+            Destroy(gameObject);
         }
     }
 }

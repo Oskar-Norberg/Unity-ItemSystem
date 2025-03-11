@@ -34,11 +34,11 @@ namespace Project.InventorySystem
             OnItemSet?.Invoke(this);
         }
 
-        // public void Equip()
-        // {
-        //     if (ItemData)
-        //         _inventory.Equip(this);
-        // }
+        public void Grab()
+        {
+            if (ItemData)
+                _inventory.Equip(this);
+        }
 
         public void Drop()
         {

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Project.ItemSystem
 {
-    public abstract class Item : Interactable
+    public class Item : Interactable
     {
         public ItemData ItemData => itemData;
         [SerializeField] private ItemData itemData;
@@ -20,19 +20,5 @@ namespace Project.ItemSystem
             
             Destroy(gameObject);
         }
-
-        // // TODO: Add grab point to item
-        // public virtual void Equip(Transform equipper)
-        // {
-        //     if (!equipper.TryGetComponent<ItemHolder>(out var playerItemHolder))
-        //     {
-        //         Debug.LogWarning("Could not equip item, equipper does not have a ItemHolder component");
-        //         return;
-        //     }
-        //
-        //     playerItemHolder.Equip(this);
-        // }
-
-        public abstract void Use(Transform user);
     }
 }

@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3c75b43a74cf0a42baf317c7b07f127, type: 3}
+  m_Name: Grabable
+  m_EditorClassIdentifier: 
+  name: Equipable
+  sprite: {fileID: 21300000, guid: 58b29367319f7c9488d6e00fc590a66d, type: 3}
+  prefab: {fileID: 6966324303841787794, guid: 1af27902207c95b4aa8c374c1a493870, type: 3}

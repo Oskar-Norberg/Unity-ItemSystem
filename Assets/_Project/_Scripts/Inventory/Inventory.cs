@@ -1,5 +1,6 @@
 using Project.InteractableSystem;
 using Project.ItemSystem;
+using Project.ItemSystem.Components;
 using UnityEngine;
 
 namespace Project.InventorySystem
@@ -41,16 +42,20 @@ namespace Project.InventorySystem
             DecreaseStackSize(inventorySlot);
         }
 
-        // public void Equip(InventorySlot inventorySlot)
-        // {
-        //     if (inventorySlot.ItemData == null)
-        //         return;
-        //     
-        //     var item = Instantiate(inventorySlot.ItemData.prefab, transform.position, Quaternion.identity);
-        //     item.GetComponent<Item>().Equip(transform);
-        //     
-        //     DecreaseStackSize(inventorySlot);
-        // }
+        public void Equip(InventorySlot inventorySlot)
+        {
+            if (inventorySlot.ItemData == null)
+                return;
+            
+            var item = Instantiate(inventorySlot.ItemData.prefab, transform.position, Quaternion.identity);
+            
+            if (item.TryGetComponent<Grabable>(out var equipable))
+            {
+                equipable.Hold(transform);
+            }
+            
+            DecreaseStackSize(inventorySlot);
+        }
 
         public bool DragItem(InventorySlot from, InventorySlot to)
         {

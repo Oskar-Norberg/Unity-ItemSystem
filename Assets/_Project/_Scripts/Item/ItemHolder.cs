@@ -1,5 +1,5 @@
 ﻿using Project.InventorySystem;
-using Project.ItemSystem;
+using Project.ItemSystem.Components;
 using UnityEngine;
 
 namespace Project.InteractableSystem
@@ -9,11 +9,11 @@ namespace Project.InteractableSystem
         [SerializeField] private Inventory inventory;
         [SerializeField] private Transform itemHolder;
         
-        protected Item CurrentItem;
+        protected Grabable CurrentItem;
         
-        public void Equip(Item item)
+        public void Grab(Grabable item)
         {
-            Dequip();
+            Drop();
             
             item.transform.SetParent(itemHolder);
             item.transform.localPosition = Vector3.zero;
@@ -22,12 +22,12 @@ namespace Project.InteractableSystem
             CurrentItem = item;
         }
 
-        protected void Dequip()
+        protected void Drop()
         {
             if (!CurrentItem)
                 return;
             
-            inventory.AddItem(CurrentItem.ItemData);
+            inventory.AddItem(CurrentItem.Item.ItemData);
 
             DestroyItem();
         }

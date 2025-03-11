@@ -12,7 +12,7 @@ namespace Project.PlayerCharacter.Item
 
         private void OnRightClick()
         {
-            Dequip();
+            Drop();
         }
     }
 }

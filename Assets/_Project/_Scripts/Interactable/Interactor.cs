@@ -166,7 +166,7 @@ namespace Project.InteractableSystem
             Gizmos.color = Color.yellow;
             Matrix4x4 temp = Gizmos.matrix;
             Gizmos.matrix = Matrix4x4.TRS(interactOrigin.position, interactOrigin.rotation, Vector3.one);
-            Gizmos.DrawFrustum(Vector3.zero, interactionAngle * 2, interactionRange, 0.1f, 1.0f);
+            Gizmos.DrawFrustum(Vector3.zero, interactionAngle, interactionRange, 0.1f, 1.0f);
             Gizmos.matrix = temp;
 
             if (_closestInteractable)

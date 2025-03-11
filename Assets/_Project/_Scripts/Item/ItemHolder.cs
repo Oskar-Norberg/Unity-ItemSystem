@@ -12,7 +12,7 @@ namespace Project.InteractableSystem
         
         public void Equip(Item item)
         {
-            DestroyItem();
+            Dequip();
             
             item.transform.SetParent(itemHolder);
             item.transform.localPosition = Vector3.zero;

@@ -9,7 +9,7 @@ namespace Project.PlayerCharacter.Item
             if (!CurrentItem)
                 return;
             
-            CurrentItem.Use(transform);
+            CurrentItem.Item.Use(transform);
         }
 
         private void OnRightClick()

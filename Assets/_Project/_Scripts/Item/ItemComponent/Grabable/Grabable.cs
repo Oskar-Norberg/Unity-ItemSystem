@@ -3,20 +3,8 @@ using UnityEngine;
 
 namespace Project.ItemSystem.Components
 {
-    public class Grabable : MonoBehaviour, IItemComponent
+    public class Grabable : ItemComponent
     {
-        public Item Item { get; private set; }
-        
-        private void Start()
-        {
-            Item = GetComponent<Item>();
-        }
-
-        public void Use(Transform user)
-        {
-            Item.Use(user);
-        }
-
         public void Hold(Transform equipper)
         {
             if (!equipper.TryGetComponent<ItemHolder>(out var playerItemHolder))

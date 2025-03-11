@@ -2,24 +2,9 @@ using UnityEngine;
 
 namespace Project.ItemSystem.Components
 {
-    public class Consumable : MonoBehaviour, IItemComponent
-    {
-        public Item Item { get; private set; }
-
-        // TODO: This code is getting repeated a lot, consider moving it to a base class
-        private void Start()
-        {
-            Item = GetComponent<Item>();
-            
-            Item.OnItemUsed += Use;
-        }
-        
-        private void OnDestroy()
-        {
-            Item.OnItemUsed -= Use;
-        }
-
-        public void Use(Transform user)
+    public class Consumable : ItemComponent
+    { 
+        protected override void Use(Transform user)
         {
             Consume(user);
         }

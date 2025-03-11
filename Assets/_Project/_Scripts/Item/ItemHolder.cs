@@ -32,12 +32,6 @@ namespace Project.InteractableSystem
             DestroyItem();
         }
 
-        private void OnSubmit()
-        {
-            if (CurrentItem)
-                CurrentItem.Use(transform);
-        }
-
         protected void DestroyItem()
         {
             if (CurrentItem)

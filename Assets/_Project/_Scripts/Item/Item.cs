@@ -1,16 +1,13 @@
 using Project.ItemSystem;
 using Project.PlayerCharacter.Item;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Project.InteractableSystem
 {
     public abstract class Item : Interactable
     {
         public ItemData ItemData => itemData;
-        [SerializeField] protected ItemData itemData;
-
-        [SerializeField] protected Transform pickUpPoint;
+        [SerializeField] private ItemData itemData;
         
         public override void Interact(Transform interactor)
         {

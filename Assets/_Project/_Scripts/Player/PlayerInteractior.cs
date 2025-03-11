@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 namespace Project.PlayerCharacter
 {
     [RequireComponent(typeof(PlayerInput))]
-    public class PlayerInteraction : Interactor
+    public class PlayerInteractor : Interactor
     { 
         private void OnSubmit(InputValue submitValue)
         {
